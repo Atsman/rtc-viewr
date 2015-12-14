@@ -4,7 +4,7 @@
             [compojure.route :as route]
             [compojure.response :refer [render]]
             [clojure.java.io :as io]
-            [ring.adapter.jetty :as ring]))
+            [org.httpkit.server :as http]))
 
 
 ;; This is a handler that returns the
@@ -23,4 +23,4 @@
 (defn -main
   [& args]
   (let [app (wrap-defaults app site-defaults)]
-    (ring/run-jetty #'app {:port 8080 :join? false})))
+    (http/run-server #'app {:port 8080 :join? false})))

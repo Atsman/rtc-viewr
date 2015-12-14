@@ -1,12 +1,17 @@
-(ns rtcviewr.core)
+(ns rtcviewr.core
+  (:require [reagent.core :as r]
+            [goog.dom :as dom]
+            [rtc]))
 
-(defn set-html! [el content]
-  (set! (.-innerHTML el) content))
+(defn getMainElement []
+  (.querySelector js/document "main"))
+
+(defn hello-world [name]
+  [:div (+ "Hello World " name)])
 
 (defn main
   []
-  (let [content "Hello World from ClojureScript"
-        element (aget (js/document.getElementsByTagName "main") 0)]
-    (set-html! element content)))
+  (r/render-component [hello-world "Oleg"]
+    (getMainElement)))
 
 (main)
