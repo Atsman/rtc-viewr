@@ -12,6 +12,8 @@ Realtime comunation application, uses webrtc under the hood.
 ### Server-side
 1. To start server - run 'lein run' 
 
+Server will start on 8080 port.
+
 ### Client-side
 1. To compile the ClojureScript project once - run 'lein cljsbuild once'
 2. To automatically recompile when files are modified. - 'lein cljsbuild auto'
