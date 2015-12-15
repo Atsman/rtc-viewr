@@ -2,25 +2,11 @@
   (:require [reagent.core :as r]
             [goog.dom :as dom]
             [rtc]
-            [rtcviewr.components.header :as h]))
+            [rtcviewr.components.main :refer [main]]))
 
-(defn getMainElement []
-  (.querySelector js/document "main"))
-
-(defn hello-world [name]
-  [:div (str "Hello World " name)])
-
-(defn main-el
+(defn init!
   []
-  [:main
-    [h/header]
-    [:video.mini-video]
-    [:video.remote-video]
-    ])
+  (r/render-component [main]
+    (.-body js/document)))
 
-(defn main
-  []
-  (r/render-component [main-el]
-    (getMainElement)))
-
-(main)
+(init!)

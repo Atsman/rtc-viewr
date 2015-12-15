@@ -1,17 +1,13 @@
-(ns rtcviewr.components.header)
+(ns rtcviewr.components.header
+  (:require [rtcviewr.components.commons :refer [link]]))
 
 (def item-class "header-nav__item")
 
 (def links-data
-  [{:a-class item-class :i "fa fa-paper-plane"}
-   {:a-class (str item-class " chat-btn") :i "fa fa-comments"}
-   {:a-class item-class :i "fa fa-code"}
-   {:a-class item-class :i "fa fa-cogs"}])
-
-(defn link 
-  [data]
-  [:a {:className (:a-class data)}
-    [:i {:className (:i data)}]])
+  [{:a-class item-class :i-class-class "fa fa-paper-plane"}
+   {:a-class (str item-class " chat-btn") :i-class "fa fa-comments"}
+   {:a-class item-class :i-class "fa fa-code"}
+   {:a-class item-class :i-class "fa fa-cogs"}])
 
 (defn header
   [] 
