@@ -1,34 +1,20 @@
 # rtc-viewr
 
-FIXME: description
+Realtime comunation application, uses webrtc under the hood.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+1. Install leingein from http://leiningen.org/
+2. Go to the project folder and run 'lein install' to install dependencies.
 
-## Usage
+## Development
 
-FIXME: explanation
+### Server-side
+1. To start server - run 'lein run' 
 
-    $ java -jar rtc-viewr-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
+### Client-side
+1. To compile the ClojureScript project once - run 'lein cljsbuild once'
+2. To automatically recompile when files are modified. - 'lein cljsbuild auto'
 
 Copyright © 2015 FIXME
 

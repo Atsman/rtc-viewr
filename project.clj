@@ -29,7 +29,7 @@
                 :compiler {:output-to "resources/public/js/app.js"
                            :output-dir "resources/public/js/out"
                            :source-map true
-                           :optimizations :advanced
+                           :optimizations :none
                            :asset-path "/static/js/out"
                            :main "rtcviewr.core"
                            :pretty-print true
