@@ -1,12 +1,17 @@
 (ns rtcviewr.core
   (:require [reagent.core :as r]
-            [goog.dom :as dom]
             [rtc]
-            [rtcviewr.components.main :refer [main]]))
+            [rtcviewr.components.main :refer [main]]
+            [rtcviewr.components.toolbarmanager :refer [toolbarManager]]))
+
+(defn qs [selector]
+  (.querySelector js/document selector))
 
 (defn init!
   []
   (r/render-component [main]
-    (.-body js/document)))
+    (qs ".main")))
 
 (init!)
+
+(toolbarManager (qs ".header") (qs ".controls"))
