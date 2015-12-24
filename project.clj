@@ -10,7 +10,7 @@
     [ring/ring-core "1.4.0"]
     [ring/ring-servlet "1.4.0"]
     [ring/ring-defaults "0.1.5"]
-    [http-kit "2.1.18"]
+    [http-kit "2.1.21-alpha2"]
 
     [org.clojure/clojurescript "1.7.170"]
     [reagent "0.5.1"]]
