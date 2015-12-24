@@ -15,8 +15,8 @@
 
 (defn ws-handler[req]
   (with-channel req channel  ; ws-con bind to the websocket connection
-     (on-receive channel (fn [msg] (send! channel msg))
-     (on-close channel (fn [status] (println channel "closed")))))
+    (on-close channel (fn [status] (println channel "closed")))
+    (on-receive channel (fn [msg] (send! channel msg)))))
 
 ;; Defines a handler that acts as router
 (defroutes app
