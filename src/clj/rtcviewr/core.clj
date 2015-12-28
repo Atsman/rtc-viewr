@@ -4,7 +4,8 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [compojure.response :refer [render]]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [rtcviewr.api.signaling :refer [ws-handler]]))
 
 
 ;; This is a handler that returns the
@@ -12,11 +13,6 @@
 (defn home
   [req]
   (render (io/resource "index.html") req))
-
-(defn ws-handler[req]
-  (with-channel req channel  ; ws-con bind to the websocket connection
-    (on-close channel (fn [status] (println channel "closed")))
-    (on-receive channel (fn [msg] (send! channel msg)))))
 
 ;; Defines a handler that acts as router
 (defroutes app

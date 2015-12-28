@@ -10,6 +10,7 @@
     [ring/ring-core "1.4.0"]
     [ring/ring-servlet "1.4.0"]
     [ring/ring-defaults "0.1.5"]
+    [cheshire "5.5.0"]
     [http-kit "2.1.19"]
 
     [org.clojure/clojurescript "1.7.170"]
