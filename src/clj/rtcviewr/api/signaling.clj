@@ -6,6 +6,7 @@
 
 (def GET_ROOM "GETROOM")
 (def ENTER_ROOM "ENTERROOM")
+(def SEND_TO_ALL "SENDTOALL")
 
 (def rooms (atom {}))
 
@@ -29,7 +30,7 @@
 
 (defn- onSendToAll [channel msg]
   (let [roomNumber (:roomId msg)]
-    (sendToAll (get @rooms roomId) msg)))
+    (sendToAll (get @rooms roomNumber) msg)))
 
 (defn- onMessage [channel msg]
   (let [jmsg (parse-string msg true) mtype (:type jmsg)]
@@ -37,7 +38,7 @@
       (= GET_ROOM mtype) (onGetRoom channel)
       (= ENTER_ROOM mtype) (onEnterRoom channel jmsg)
       (= SEND_TO_ALL mtype) (onSendToAll channel jmsg)
-      :else (send! channel "hi"))))
+      :else (send-json! channel {:type "NOT EXIST"}))))
 
 (defn ws-handler [req]
   (with-channel req channel  ; ws-con bind to the websocket connection

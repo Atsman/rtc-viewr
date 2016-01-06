@@ -7,5 +7,6 @@
   [:main
     [header-component]
     [:video {:id "mini-video"}]
-    [:video {:id "remove-video"}]
+    [:dev {:id "remotesVideos"}]
+    ;[:video {:id "remove-video"}]
     [control-component]])

@@ -16,7 +16,7 @@
 ;event listeners
 (defn onopen [e]
   (.send ws
-    (.stringify js/JSON (js-obj "command" "getall"))))
+    (.stringify js/JSON (js-obj "type" "getall"))))
 
 (defn onerror [data]
   (.log js/console data))

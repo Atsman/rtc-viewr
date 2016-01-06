@@ -17,3 +17,10 @@
 
 (toolbarManager (qs ".header") (qs ".controls"))
 
+(def webrtc (js/SimpleWebRTC. (js-obj
+  :localVideoEl "mini-video" 
+  :remoteVideosEl "remotesVideos"
+  :autoRequestMedia true))))
+
+(.on webrtc "readyToCall" (fn[] 
+  (.joinRoom webrtc "myroom1")))
