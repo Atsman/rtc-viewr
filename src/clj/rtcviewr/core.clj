@@ -25,4 +25,4 @@
 (defn -main
   [& args]
   (let [app (wrap-defaults app site-defaults)]
-    (run-server #'app {:port 8080 :join? false})))
+    (run-server #'app {:port 4502 :join? false})))

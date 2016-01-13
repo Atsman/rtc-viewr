@@ -2,4 +2,6 @@
   (:require [reagent.core :as r]))
 
 (def app-state
-  (r/atom {:controls {:active false}}))
+  (r/atom {
+    :controls {:active false}
+    :rtc nil}))
