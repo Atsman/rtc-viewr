@@ -1,2 +1,2 @@
-/deploy
-/node_modules
+deploy/*
+node_modules/*
