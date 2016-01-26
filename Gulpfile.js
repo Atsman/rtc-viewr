@@ -2,10 +2,14 @@ const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
 const tslint = require('gulp-tslint');
+const tsconfig = require('./tsconfig.json');
 const tsProject = ts.createProject('./tsconfig.json');
 const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
+const browserify = require('browserify');
+const tsify = require('tsify');
+const source = require('vinyl-source-stream');
 
 const SASS_FILES = './src/sass/**/*.scss';
 
@@ -23,12 +27,14 @@ gulp.task('sass', function() {
 });
 
 gulp.task('ts', function() {
-  tsProject.src(['./src/ts/**/*.ts'])
-    .pipe(sourcemaps.init())
-    .pipe(ts(tsProject))
-    .js
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./deploy'))
+  browserify()
+    .add('./src/ts/boot.ts')
+    .plugin(tsify)
+    .transform("babelify", {presets: ["es2015"], extensions : [".js",".ts"]})
+    .bundle()
+    .on('error', function (error) { console.error(error.toString()); })
+    .pipe(source('build.js'))
+    .pipe(gulp.dest('./deploy/js'))
     .pipe(browserSync.stream());
 });
 
@@ -48,12 +54,14 @@ gulp.task('fonts', function() {
     .pipe(gulp.dest('./deploy/fonts'))
 });
 
-gulp.task('browser-sync', ['ts', 'html'], function() {
+gulp.task('serve', ['ts', 'sass', 'html', 'fonts'], function() {
     browserSync.init({
         server: {
           index: './deploy/index.html',
           baseDir: ["./deploy", "./"]
-        }
+        },
+        port: 3003,
+        https: true
     });
 
     gulp.watch('src/ts/**/*.ts', ['ts']);

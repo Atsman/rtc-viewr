@@ -1,10 +1,11 @@
-import {Component} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
+import SimpleWebRtc from 'simplewebrtc';
 
 @Component({
   selector: 'main-section',
   template: `
     <video id="mini-video" autoplay></video>
-    <video id="remote-video" autoplay></video>
+    <div id="remotesVideos"></div>
     <div class="controls">
       <a href="#" class='controls-item controls-item--mute' (click)="muteAudio()">
         <i class="fa fa-microphone"></i>
@@ -21,7 +22,18 @@ import {Component} from 'angular2/core';
     </div>
   `
 })
-export class MainSectionComponent {
+export class MainSectionComponent implements OnInit {
+
+  public webrtc: SimpleWebRtc;
+
+  public ngOnInit(): void {
+    this.webrtc = new SimpleWebRtc({
+      localVideoEl: 'mini-video',
+      remoteVideoEl: 'remotesVideos',
+      autoRequestMedia: true
+    })
+  }
+
   public muteAudio(): void {
     console.log('muteAudio');
   }
