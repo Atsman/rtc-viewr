@@ -1,17 +1,26 @@
 import {Component, OnInit} from 'angular2/core';
+import {NgClass} from 'angular2/common';
 import SimpleWebRtc from 'simplewebrtc';
 
 @Component({
   selector: 'main-section',
+  directives: [NgClass],
   template: `
     <video id="mini-video" autoplay></video>
     <div id="remotesVideos"></div>
     <div class="controls">
-      <a href="#" class='controls-item controls-item--mute' (click)="muteAudio()">
-        <i class="fa fa-microphone"></i>
+      <a class='controls-item controls-item--mute' (click)="muteAudio()">
+        <i class="fa" [ngClass]="{
+          'fa-microphone': !isMuted,
+          'fa-microphone-slash': isMuted
+        }">
+        </i>
       </a>
-      <a href="#" class='controls-item controls-item--offvideo' (click)="muteVideo()">
-        <i class="fa fa-video-camera"></i>
+      <a class='controls-item controls-item--offvideo' (click)="pauseVideo()">
+        <i class="fa" [ngClass]="{
+          'fa-eye': !isVideoPaused,
+          'fa-eye-slash': isVideoPaused
+        }"></i>
       </a>
       <a href="#" class='controls-item controls-item--expand' (click)="expandFullScreen()">
         <i class="fa fa-expand"></i>
@@ -23,23 +32,44 @@ import SimpleWebRtc from 'simplewebrtc';
   `
 })
 export class MainSectionComponent implements OnInit {
-
   public webrtc: SimpleWebRtc;
 
+  public isMuted: boolean = false;
+  public isVideoPaused: boolean = false;
+
   public ngOnInit(): void {
-    this.webrtc = new SimpleWebRtc({
+    const webrtc = new SimpleWebRtc({
       localVideoEl: 'mini-video',
-      remoteVideoEl: 'remotesVideos',
+      remoteVideosEl: 'remotesVideos',
       autoRequestMedia: true
-    })
+    });
+
+    webrtc.on('readyToCall', function() {
+      webrtc.joinRoom('your awesome room name');
+    });
+
+    this.webrtc = webrtc;
   }
 
   public muteAudio(): void {
-    console.log('muteAudio');
+    console.log('mute, isMuted: ' + this.isMuted);
+    if(this.isMuted) {
+      this.webrtc.unmute();
+      this.isMuted = false;
+    } else {
+      this.webrtc.mute();
+      this.isMuted = true;
+    }
   }
 
-  public muteVideo(): void {
-    console.log('muteVideo');
+  public pauseVideo(): void {
+    if(this.isVideoPaused) {
+      this.webrtc.resumeVideo();
+      this.isVideoPaused = false;
+    } else {
+      this.webrtc.pauseVideo();
+      this.isVideoPaused = true;
+    }
   }
 
   public expandFullScreen(): void {

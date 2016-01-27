@@ -3,6 +3,7 @@ import {HeaderComponent} from './components/header.component';
 import {MainSectionComponent} from './components/main-section.component';
 import {ToolbarManager} from './components/toolbarManager';
 import {Observable} from 'rxjs/Rx';
+import {stateAndDispatcher} from './state/state';
 
 @Component({
   selector: 'my-app',
@@ -10,7 +11,8 @@ import {Observable} from 'rxjs/Rx';
     <header-component></header-component>
     <main-section></main-section>
   `,
-  directives: [HeaderComponent, MainSectionComponent]
+  directives: [HeaderComponent, MainSectionComponent],
+  providers: stateAndDispatcher
 })
 export class AppComponent implements AfterViewInit {
   private mouseMoveEventBus: Observable<Object>;

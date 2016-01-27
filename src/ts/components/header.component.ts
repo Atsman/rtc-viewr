@@ -1,4 +1,6 @@
-import {Component} from 'angular2/core';
+import {Observer, Observable} from 'rxjs';
+import {Component, Inject} from 'angular2/core';
+import {state, dispatcher, Action, AppState, ShowSidebarAction} from '../state/state';
 
 @Component({
   selector: 'header-component',
@@ -13,7 +15,7 @@ import {Component} from 'angular2/core';
             <a href="#" class="header-nav__item">
               <i class="fa fa-paper-plane"></i>
             </a>
-            <a href="#" class="header-nav__item chat-btn">
+            <a href="#" class="header-nav__item chat-btn" (click)="onChatClick()">
               <i class="fa fa-comments"></i>
             </a>
             <a href="#" class="header-nav__item">
@@ -23,11 +25,24 @@ import {Component} from 'angular2/core';
               <i class="fa fa-cogs"></i>
             </a>
           </nav>
+          {{sideBar|async}}
         </div>
       </div>
     </header>
   `
 })
 export class HeaderComponent {
+  constructor(@Inject(dispatcher) private dispatcher: Observer<Action>,
+              @Inject(state) private state: Observable<AppState>) {
+  }
+
+  public onChatClick(): any {
+    this.dispatcher.next(new ShowSidebarAction());
+    this.state.map((appState: AppState) => console.log(appState));
+  }
+
+  public get sideBar() {
+    return this.state.map(appState => JSON.stringify(appState.sidebar));
+  }
 
 }
