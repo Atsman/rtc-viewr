@@ -60,6 +60,13 @@ module.exports = {
       // Support for *.json files.
       { test: /\.json$/,  loader: 'json-loader' },
 
+      {
+        test: /\.(eot|ttf)$/,
+        loader: 'file?name=fonts/[name].[ext]?[hash]'
+      },
+
+      { test: /\.scss$/,  loaders: ["style", "css?sourceMap", "sass?sourceMap"] },
+
       // Support for CSS as raw text
       { test: /\.css$/,   loader: 'raw-loader' },
 
@@ -98,7 +105,8 @@ module.exports = {
     host: metadata.host,
     // contentBase: 'src/',
     historyApiFallback: true,
-    watchOptions: { aggregateTimeout: 300, poll: 1000 }
+    watchOptions: { aggregateTimeout: 300, poll: 1000 },
+    https: true
   },
   // we need this due to problems with es6-shim
   node: {global: 'window', progress: false, crypto: 'empty', module: false, clearImmediate: false, setImmediate: false}

@@ -29,6 +29,8 @@
   <meta name="theme-color" content="#00bcd4">
   <!-- end favicon -->
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
   <!-- base url -->
   <base href="{%= o.webpackConfig.metadata.baseUrl %}">
 
@@ -57,7 +59,7 @@
 
   {% if (o.webpackConfig.metadata.ENV === 'development') { %}
   <!-- Webpack Dev Server reload -->
-  <script src="http://{%= o.webpackConfig.metadata.host %}:{%= o.webpackConfig.metadata.port %}/webpack-dev-server.js"></script>
+  <script src="https://{%= o.webpackConfig.metadata.host %}:{%= o.webpackConfig.metadata.port %}/webpack-dev-server.js"></script>
   {% } %}
 
   <!-- Webpack HtmlWebpackPlugin manually inject scripts -->

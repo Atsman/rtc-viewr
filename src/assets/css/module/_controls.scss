@@ -1,0 +1,54 @@
+.controls {
+  bottom: 0;
+  left: 50%;
+  position: fixed;
+  right: auto;
+  transform: translateX(-50%) translateY(200%);
+  transition: .4s;
+
+  &.active {
+    bottom: 5%;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.controls-item {
+  background: rgba(102, 102, 102, .6);
+  border-radius: 50%;
+  color: #fff;
+  display: inline-block;
+  height: 50px;
+  margin: 0 5px;
+  text-align: center;
+  transition: all .1s;
+  width: 50px;
+
+  i {
+    @include font-size(18px);
+    line-height: 50px;
+  }
+}
+
+.controls-item--mute {
+  &:hover {
+    background: #ab47bc;
+  }
+}
+
+.controls-item--offvideo {
+  &:hover {
+    background: #b8860b;
+  }
+}
+
+.controls-item--expand {
+  &:hover {
+    background: #407cf7;
+  }
+}
+
+.controls-item--hangup {
+  &:hover {
+    background: #a52a2a;
+  }
+}
