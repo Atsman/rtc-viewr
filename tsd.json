@@ -7,6 +7,9 @@
   "installed": {
     "angular2/angular2.d.ts": {
       "commit": "f29bf726a60674dbf24bab06a26403a3871c3f21"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "5d0f2126c8dac8fce0ff020218aea06607213b0d"
     }
   }
 }

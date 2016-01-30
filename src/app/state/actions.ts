@@ -1,3 +1,7 @@
-export class ShowSidebarAction {}
+import {Message} from '../model/chat/message';
 
-export type Action = ShowSidebarAction;
+export class ShowSidebarAction {}
+export class ChangeInterviewId {constructor(public id: string) {}}
+export class SendMessage {constructor(public message: Message) {}}
+
+export type Action = ShowSidebarAction|ChangeInterviewId|SendMessage;

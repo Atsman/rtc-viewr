@@ -1,32 +1,44 @@
-import {Component, AfterViewInit} from 'angular2/core';
+import {Component, AfterViewInit, Inject} from 'angular2/core';
+import {RouteParams} from 'angular2/router';
+import {Observable, Observer} from 'rxjs';
+
+import {state, dispatcher, AppState} from '../state/state';
+import {Action, ChangeInterviewId} from '../state/actions';
+
 import {HeaderComponent} from './header.component';
-import {MainSectionComponent} from './main-section.component';
+import {VideoSectionComponent} from './video-section.component.ts';
+import {SidebarComponent} from './sidebar.component';
 import {ToolbarManager} from './toolbarManager';
-import {Observable} from 'rxjs/Rx';
 
 @Component({
   selector: 'main',
+  directives: [HeaderComponent, VideoSectionComponent, SidebarComponent],
   template: `
-    <header-component></header-component>
-    <main-section></main-section>
-  `,
-  directives: [HeaderComponent, MainSectionComponent]
+    <main class="main" [class.sidebar-active]="isSidebarActive|async">
+      <header-component></header-component>
+      <video-section></video-section>
+    </main>
+    <sidebar></sidebar>
+  `
 })
 export class MainComponent implements AfterViewInit {
-    private mouseMoveEventBus: Observable<Object>;
+  constructor(
+    private _routeParams: RouteParams,
+    @Inject(state) private state: Observable<AppState>,
+    @Inject(dispatcher) private _dispatcher: Observer<Action>) {
+    const interviewId = _routeParams.get('interviewId');
+    this._dispatcher.next(new ChangeInterviewId(interviewId));
+  }
 
-    constructor() {
-        this.mouseMoveEventBus = Observable
-            .fromEvent(window, 'mousemove')
-            .debounceTime(100);
+  public ngAfterViewInit(): void {
+    const toolbar = document.querySelector('.header');
+    const controls = document.querySelector('.controls');
+    if(toolbar && controls) {
+      new ToolbarManager(window, toolbar, controls);
     }
+  }
 
-    public ngAfterViewInit(): void {
-        const toolbar = document.querySelector('.header');
-        const controls = document.querySelector('.controls');
-        if (toolbar && controls) {
-            const toolbarManager = new ToolbarManager(window, toolbar, controls);
-            this.mouseMoveEventBus.subscribe(toolbarManager.handleMouseMove.bind(toolbarManager));
-        }
-    }
+  get isSidebarActive() {
+    return this.state.map(appState => !appState.sidebar.hidden);
+  }
 };

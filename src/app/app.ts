@@ -28,7 +28,7 @@ import {MainComponent} from './components/main';
 ])
 export class App {
   angularclassLogo = 'assets/img/angularclass-avatar.png';
-  name = 'Angular 2 Webpack Starter';
+  name = 'Rtc viewer';
   url = 'https://twitter.com/AngularClass';
   constructor() {
 

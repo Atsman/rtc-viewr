@@ -1,16 +1,16 @@
+import {Observable} from 'rxjs';
+
 /** Idle time in ms before the UI is hidden. */
-var HIDE_TIMEOUT = 2000;
+const HIDE_TIMEOUT = 2000;
 /** Velocity required in a mousemove to reveal the UI (pixels/sample). */
-var SHOW_VELOCITY = 25;
+const SHOW_VELOCITY = 25;
 /** Distance from the top of the screen required to reveal the toolbars. */
-var TOP_TOOLBAR_REVEAL_DISTANCE = 100;
+const TOP_TOOLBAR_REVEAL_DISTANCE = 100;
 /** Distance from the top of the screen required to reveal the toolbars. */
-var BOTTOM_CONTROLS_REVEAL_DISTANCE = 150;
+const BOTTOM_CONTROLS_REVEAL_DISTANCE = 150;
 
 function isHighVelocityMouseMove(e) {
-  // TODO: event.movementX/movementY are not working.
-  return e.type == 'mousemove';
-  /*return e.type == 'mousemove' && e.originalEvent.movementX * e.originalEvent.movementX + e.originalEvent.movementY * e.originalEvent.movementY > SHOW_VELOCITY * SHOW_VELOCITY;*/
+  return e.type === 'mousemove';
 }
 
 function isMouseNearTopToolbar(e) {
@@ -25,6 +25,12 @@ export function ToolbarManager(window, toolbar, controls) {
   this.window_ = window;
   this.toolbar_ = toolbar;
   this.controls_ = controls;
+
+  const mouseMoveObservable = Observable
+    .fromEvent(window, 'mousemove')
+    .debounceTime(100);
+
+  mouseMoveObservable.subscribe(this.handleMouseMove.bind(this));
 
   this.toolbarTimeout_ = null;
   this.isMouseNearTopToolbar_ = false;

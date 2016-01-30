@@ -6,7 +6,7 @@
     "indent": "spaces",
     "max-line-length": [
       true,
-      100
+      150
     ],
     "member-ordering": [
       true,
@@ -45,7 +45,6 @@
     "variable-name": false,
     "whitespace": [
       true,
-      "check-branch",
       "check-decl",
       "check-operator",
       "check-separator",

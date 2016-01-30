@@ -1,1 +1,1 @@
-/// <reference path="simplewebrtc/simplewebrtc.d.ts" />
+/// <reference path="lodash/lodash.d.ts" />

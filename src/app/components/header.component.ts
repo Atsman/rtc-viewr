@@ -14,16 +14,16 @@ import {Action, ShowSidebarAction} from '../state/actions';
         </div>
         <div class="header-actions">
           <nav class="header-nav">
-            <a href="#" class="header-nav__item">
+            <a class="header-nav__item">
               <i class="fa fa-paper-plane"></i>
             </a>
-            <a href="#" class="header-nav__item chat-btn" (click)="onChatClick()">
+            <a class="header-nav__item chat-btn" (click)="onChatClick()">
               <i class="fa fa-comments"></i>
             </a>
-            <a href="#" class="header-nav__item">
+            <a class="header-nav__item">
               <i class="fa fa-code"></i>
             </a>
-            <a href="#" class="header-nav__item">
+            <a class="header-nav__item">
               <i class="fa fa-cogs"></i>
             </a>
           </nav>

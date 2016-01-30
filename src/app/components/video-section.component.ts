@@ -1,9 +1,11 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit, Input, Inject} from 'angular2/core';
 import {NgClass} from 'angular2/common';
 import SimpleWebRtc = require('simplewebrtc');
+import {state, dispatcher, AppState} from '../state/state';
+import {Observable} from 'rxjs';
 
 @Component({
-  selector: 'main-section',
+  selector: 'video-section',
   directives: [NgClass],
   template: `
     <video id="mini-video" autoplay></video>
@@ -31,10 +33,14 @@ import SimpleWebRtc = require('simplewebrtc');
     </div>
   `
 })
-export class MainSectionComponent implements OnInit {
+export class VideoSectionComponent implements OnInit {
   public webrtc;
   public isMuted: boolean = false;
   public isVideoPaused: boolean = false;
+
+  constructor(@Inject(state) private _state: Observable<AppState>) {
+
+  }
 
   public ngOnInit(): void {
     const webrtc = new SimpleWebRtc({
@@ -43,15 +49,16 @@ export class MainSectionComponent implements OnInit {
       autoRequestMedia: true
     });
 
-    webrtc.on('readyToCall', function() {
-      webrtc.joinRoom('your awesome room name');
+    webrtc.on('readyToCall', () => {
+      this._state
+        .map(appState => appState.interview.id)
+        .subscribe(webrtc.joinRoom.bind(webrtc));
     });
 
     this.webrtc = webrtc;
   }
 
   public muteAudio(): void {
-    console.log('mute, isMuted: ' + this.isMuted);
     if(this.isMuted) {
       this.webrtc.unmute();
       this.isMuted = false;
