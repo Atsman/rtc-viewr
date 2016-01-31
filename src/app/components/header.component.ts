@@ -1,6 +1,6 @@
 import {Observer, Observable} from 'rxjs';
 import {Component, Inject} from 'angular2/core';
-import {state, dispatcher, AppState} from '../state/state';
+import {APP_STATE, DISPATCHER, AppState} from '../state/state';
 import {Action, ShowSidebarAction} from '../state/actions';
 
 
@@ -34,8 +34,8 @@ import {Action, ShowSidebarAction} from '../state/actions';
   `
 })
 export class HeaderComponent {
-  constructor(@Inject(dispatcher) private dispatcher: Observer<Action>,
-              @Inject(state) private state: Observable<AppState>) {
+  constructor(@Inject(DISPATCHER) private dispatcher: Observer<Action>,
+              @Inject(APP_STATE) private state: Observable<AppState>) {
   }
 
   public onChatClick(): any {

@@ -15,5 +15,5 @@ import {Message} from '../../model/chat/message';
   `
 })
 export class ChatMessageComponent {
-  @Input() message: Message;
+  @Input() public message: Message;
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, Inject} from 'angular2/core';
 import {NgClass} from 'angular2/common';
 import SimpleWebRtc = require('simplewebrtc');
-import {state, dispatcher, AppState} from '../state/state';
+import {APP_STATE, DISPATCHER, AppState} from '../state/state';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -38,7 +38,7 @@ export class VideoSectionComponent implements OnInit {
   public isMuted: boolean = false;
   public isVideoPaused: boolean = false;
 
-  constructor(@Inject(state) private _state: Observable<AppState>) {
+  constructor(@Inject(APP_STATE) private _state: Observable<AppState>) {
 
   }
 
@@ -54,6 +54,22 @@ export class VideoSectionComponent implements OnInit {
         .map(appState => appState.interview.id)
         .subscribe(webrtc.joinRoom.bind(webrtc));
     });
+
+    /*webrtc.on('videoAdded', function (video, peer) {
+        console.log('video added', peer);
+        var remotes = document.getElementById('remotes');
+        if (remotes) {
+            var container = document.createElement('div');
+            container.className = 'videoContainer';
+            container.id = 'container_' + webrtc.getDomId(peer);
+            container.appendChild(video);
+
+            // suppress contextmenu
+            video.oncontextmenu = function () { return false; };
+
+            remotes.appendChild(container);
+        }
+    });*/
 
     this.webrtc = webrtc;
   }

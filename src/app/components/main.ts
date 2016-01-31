@@ -2,7 +2,7 @@ import {Component, AfterViewInit, Inject} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {Observable, Observer} from 'rxjs';
 
-import {state, dispatcher, AppState} from '../state/state';
+import {APP_STATE, DISPATCHER, AppState} from '../state/state';
 import {Action, ChangeInterviewId} from '../state/actions';
 
 import {HeaderComponent} from './header.component';
@@ -24,8 +24,8 @@ import {ToolbarManager} from './toolbarManager';
 export class MainComponent implements AfterViewInit {
   constructor(
     private _routeParams: RouteParams,
-    @Inject(state) private state: Observable<AppState>,
-    @Inject(dispatcher) private _dispatcher: Observer<Action>) {
+    @Inject(APP_STATE) private state: Observable<AppState>,
+    @Inject(DISPATCHER) private _dispatcher: Observer<Action>) {
     const interviewId = _routeParams.get('interviewId');
     this._dispatcher.next(new ChangeInterviewId(interviewId));
   }
@@ -39,6 +39,6 @@ export class MainComponent implements AfterViewInit {
   }
 
   get isSidebarActive() {
-    return this.state.map(appState => !appState.sidebar.hidden);
+    return this.state.map(appState => appState.sidebar.active);
   }
 };

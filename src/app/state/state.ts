@@ -8,7 +8,7 @@ import {Action, ShowSidebarAction, ChangeInterviewId, SendMessage} from './actio
 import {Message} from '../model/chat/message';
 
 interface SidebarState {
-  hidden: boolean;
+  active: boolean;
 }
 
 interface ChatState {
@@ -30,7 +30,7 @@ const INITIAL_STATE: AppState = {
     id: null
   },
   sidebar: {
-    hidden: true
+    active: false
   },
   chat: {
     messages: []
@@ -55,7 +55,7 @@ const sidebarStateHandler: StateHandler<SidebarState> = (initState, actions) => 
   return actions.scan((state, action) => {
     if(action instanceof ShowSidebarAction) {
       return {
-        hidden: !state.hidden
+        active: !state.active
       };
     } else {
       return state;
@@ -95,8 +95,8 @@ function wrapIntoBehavior(init: AppState, obs: Observable<AppState>) {
 
 // -- DI config
 const initState = new OpaqueToken('initState');
-export const dispatcher = new OpaqueToken('dispatcher');
-export const state = new OpaqueToken('state');
+export const DISPATCHER = new OpaqueToken('dispatcher');
+export const APP_STATE = new OpaqueToken('state');
 
 function dispatcherFactory() {
   const dispatcher = new Subject<Action>();
@@ -106,6 +106,6 @@ function dispatcherFactory() {
 
 export const stateAndDispatcher = [
   provide(initState, {useValue: INITIAL_STATE}),
-  provide(dispatcher, {useFactory: dispatcherFactory}),
-  provide(state, {useFactory: stateFn, deps: [new Inject(initState), new Inject(dispatcher)]})
+  provide(DISPATCHER, {useFactory: dispatcherFactory}),
+  provide(APP_STATE, {useFactory: stateFn, deps: [new Inject(initState), new Inject(DISPATCHER)]})
 ];

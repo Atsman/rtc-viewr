@@ -1,11 +1,13 @@
-import {Component, Inject} from 'angular2/core';
+import {Component, Inject, OnInit} from 'angular2/core';
 import {Observable, Observer} from 'rxjs';
 
 import {ChatMessageComponent} from './chat-message.component';
 import {Message} from '../../model/chat/message';
 
-import {state, dispatcher, AppState} from '../../state/state';
+import {APP_STATE, DISPATCHER, AppState} from '../../state/state';
 import {Action, SendMessage} from '../../state/actions';
+
+import {ChatService} from '../../services/chat/chat.service';
 
 @Component({
   selector: 'chat',
@@ -32,24 +34,31 @@ import {Action, SendMessage} from '../../state/actions';
     </div>
   `
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
   public message: string;
 
   constructor(
-    @Inject(state) private _state: Observable<AppState>,
-    @Inject(dispatcher) private _dispatcher: Observer<Action>) {
+    @Inject(APP_STATE) private _state: Observable<AppState>,
+    @Inject(DISPATCHER) private _dispatcher: Observer<Action>,
+    private chatService: ChatService) {
+  }
+
+  public ngOnInit(): void {
+    this.chatService.joinRoom();
   }
 
   public sendMessage() {
-    this._dispatcher.next(new SendMessage({
+    const message = {
       userId: 'test',
       time: new Date(),
       message: this.message
-    }));
+    };
+    this._dispatcher.next(new SendMessage(message));
     this.message = '';
+    this.chatService.sendMessage(message);
   }
 
-  public get messages() {
+  public get messages(): Observable<Array<Message>> {
     return this._state.map(appState => appState.chat.messages);
   }
 }
