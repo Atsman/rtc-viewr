@@ -24,8 +24,6 @@ export class ChatService {
   }
 
   public sendMessage(message: Message): void {
-    const jwt = localStorage.getItem('jwt');
-    message.userId = jwt.replace(/"/g, '');
     this.socket.sendMessage(message);
   }
 

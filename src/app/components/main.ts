@@ -3,7 +3,7 @@ import {RouteParams} from 'angular2/router';
 import {Observable, Observer} from 'rxjs';
 
 import {APP_STATE, DISPATCHER, AppState} from '../state/state';
-import {Action, ChangeInterviewId} from '../state/actions';
+import {Action, ChangeInterviewId, LoadUser, GetMe} from '../state/actions';
 
 import {HeaderComponent} from './header.component';
 import {VideoSectionComponent} from './video-section.component.ts';
@@ -28,6 +28,7 @@ export class MainComponent implements AfterViewInit {
     @Inject(DISPATCHER) private _dispatcher: Observer<Action>) {
     const interviewId = _routeParams.get('interviewId');
     this._dispatcher.next(new ChangeInterviewId(interviewId));
+    this._dispatcher.next(new GetMe());
   }
 
   public ngAfterViewInit(): void {

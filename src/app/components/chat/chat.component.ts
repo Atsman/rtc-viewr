@@ -8,6 +8,7 @@ import {APP_STATE, DISPATCHER, AppState} from '../../state/state';
 import {Action, SendMessage} from '../../state/actions';
 
 import {ChatService} from '../../services/chat/chat.service';
+import {User} from '../../model/user';
 
 @Component({
   selector: 'chat',
@@ -37,10 +38,14 @@ import {ChatService} from '../../services/chat/chat.service';
 export class ChatComponent implements OnInit {
   public message: string;
 
+  private me: User;
+
   constructor(
     @Inject(APP_STATE) private _state: Observable<AppState>,
     @Inject(DISPATCHER) private _dispatcher: Observer<Action>,
     private chatService: ChatService) {
+
+    _state.subscribe(({user}) => this.me = user.users[user.me]);
   }
 
   public ngOnInit(): void {
@@ -49,7 +54,7 @@ export class ChatComponent implements OnInit {
 
   public sendMessage() {
     const message = {
-      userId: 'test',
+      userId: this.me._id,
       time: new Date(),
       message: this.message
     };

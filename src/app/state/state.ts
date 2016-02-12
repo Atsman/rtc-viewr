@@ -4,8 +4,11 @@ import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import * as _ from 'lodash';
 
 import {OpaqueToken, provide, Inject} from 'angular2/core';
-import {Action, ShowSidebarAction, ChangeInterviewId, SendMessage} from './actions';
+import {Action, ShowSidebarAction, ChangeInterviewId, SendMessage, LoadUser, UserLoaded, GetMe, MeLoaded} from './actions';
 import {Message} from '../model/chat/message';
+import {User} from '../model/user';
+import {UserService} from '../services/user.service';
+import {UserResource} from '../services/user.resource';
 
 interface SidebarState {
   active: boolean;
@@ -19,10 +22,16 @@ interface InterviewState {
   id: string;
 }
 
+interface UserState {
+  me: string;
+  users: {[key: string]: User};
+}
+
 export interface AppState {
   interview: InterviewState;
   sidebar: SidebarState;
   chat: ChatState;
+  user: UserState;
 }
 
 const INITIAL_STATE: AppState = {
@@ -34,11 +43,19 @@ const INITIAL_STATE: AppState = {
   },
   chat: {
     messages: []
+  },
+  user: {
+    me: null,
+    users: {}
   }
 };
 
 interface StateHandler<T> {
   (initState: T, actions: Observable<Action>) : Observable<T>;
+}
+
+interface UserStateHandler<T> {
+  (initState: T, actions: Observable<Action>, userService: UserService): Observable<T>;
 }
 
 const interviewStateHandler: StateHandler<InterviewState> = (initState, actions) => {
@@ -74,11 +91,37 @@ const chatStateHandler: StateHandler<ChatState> = (initState, actions) => {
   }, initState);
 };
 
-function stateFn(initState: AppState, actions: Observable<Action>): Observable<AppState> {
-  const combine = s => ({sidebar: s[0], chat: s[1], interview: s[2]});
+const userStateHandler: UserStateHandler<UserState> = (initState, actions, userService): Observable<UserState> => {
+  return actions.scan((state: UserState, action) => {
+    if(action instanceof GetMe) {
+      userService.getMe();
+      return state;
+    } else if(action instanceof MeLoaded) {
+      const newUser = action.user;
+      state.me = newUser._id;
+      state.users[newUser._id] = newUser;
+      return <UserState> _.assign({}, state);
+    } else if(action instanceof LoadUser) {
+      userService.getUser(action.id);
+      return state;
+    } else if(action instanceof UserLoaded) {
+      const newUser = action.user;
+      state.users[newUser.id] = newUser;
+      return <UserState> _.assign({}, state);
+    } else {
+      return state;
+    }
+  }, initState);
+};
+
+function stateFn(initState: AppState, actions: Observable<Action>, userService: UserService): Observable<AppState> {
+  const combine = s => ({sidebar: s[0], chat: s[1], interview: s[2], user: s[3]});
 
   const appStateObs: Observable<AppState> = sidebarStateHandler(initState.sidebar, actions)
-    .zip(chatStateHandler(initState.chat, actions), interviewStateHandler(initState.interview, actions))
+    .zip(
+      chatStateHandler(initState.chat, actions),
+      interviewStateHandler(initState.interview, actions),
+      userStateHandler(initState.user, actions, userService))
     .map(combine); // todo: change to reduce.
 
   return wrapIntoBehavior(initState, appStateObs);
@@ -107,5 +150,11 @@ function dispatcherFactory() {
 export const stateAndDispatcher = [
   provide(initState, {useValue: INITIAL_STATE}),
   provide(DISPATCHER, {useFactory: dispatcherFactory}),
-  provide(APP_STATE, {useFactory: stateFn, deps: [new Inject(initState), new Inject(DISPATCHER)]})
+  provide(UserService, {
+    useFactory: function(userResource, dispatcher) {
+      return new UserService(userResource, dispatcher);
+    },
+    deps: [UserResource, new Inject(DISPATCHER)]
+  }),
+  provide(APP_STATE, {useFactory: stateFn, deps: [new Inject(initState), new Inject(DISPATCHER), UserService]})
 ];

@@ -9,6 +9,9 @@ import {MainComponent} from './components/main';
 import {Logger} from './services/logger.service';
 import {CONFIG, APP_CONFIG} from './app.config';
 import {ChatService} from './services/chat/chat.service';
+import {JwtService} from './services/jwt.service';
+import {UserService} from './services/user.service';
+import {UserResource} from './services/user.resource';
 
 /*
  * App Component
@@ -16,7 +19,10 @@ import {ChatService} from './services/chat/chat.service';
  */
 @Component({
   selector: 'app',
-  providers: [...FORM_PROVIDERS, stateAndDispatcher, Logger, ChatService, provide(APP_CONFIG, {useValue: CONFIG})],
+  providers: [
+    ...FORM_PROVIDERS, stateAndDispatcher, Logger,
+    ChatService, JwtService, UserResource,
+    provide(APP_CONFIG, {useValue: CONFIG})],
   directives: [ ...ROUTER_DIRECTIVES],
   pipes: [],
   styles: [],
