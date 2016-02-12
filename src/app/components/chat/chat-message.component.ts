@@ -7,7 +7,10 @@ import {User} from '../../model/user';
 @Component({
   selector: 'chat-message',
   template: `
-    <li class="chat-item chat-item--me chat-item--other">
+    <li class="chat-item" [ngClass]="{
+      'chat-item--me': isSendByMe()|async,
+      'chat-item--other': isSendByOther()|async
+    }">
       <img src="{{getUserImage()|async}}" alt="" />
       <div class="message">
         <span class="message__user-name">{{message.username}}</span>
@@ -35,6 +38,15 @@ export class ChatMessageComponent {
       }
       return '';
     });
+  }
+
+  public isSendByMe() {
+    const self = this;
+    return this.me.map((user) => user._id === self.message.userId);
+  }
+
+  public isSendByOther() {
+    return this.isSendByMe().map(v => !v);
   }
 
   public externalize(imageId: string) {
