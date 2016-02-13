@@ -1,8 +1,9 @@
 import {Component, Input, Inject} from 'angular2/core';
 import {Message} from '../../model/chat/message';
-import {APP_STATE, DISPATCHER, AppState} from '../../state/state';
+import {APP_STATE, AppState} from '../../state/state';
 import {Observable} from 'rxjs';
 import {User} from '../../model/user';
+import {Externalizer} from '../../services/externalizer';
 
 @Component({
   selector: 'chat-message',
@@ -14,7 +15,7 @@ import {User} from '../../model/user';
       <img src="{{getUserImage()|async}}" alt="" />
       <div class="message">
         <span class="message__user-name">{{message.username}}</span>
-        <time class="message__time">{{message.time}}</time>
+        <time class="message__time">{{message.time | date}}</time>
         <p class="message__text">{{message.message}}</p>
       </div>
     </li>
@@ -25,7 +26,10 @@ export class ChatMessageComponent {
 
   private me: Observable<User>;
 
-  constructor(@Inject(APP_STATE) private appState: Observable<AppState>) {
+  constructor(
+    @Inject(APP_STATE) private appState: Observable<AppState>,
+    private externalizer: Externalizer
+  ) {
     this.me = appState.map(({user}) => user.users[user.me]);
   }
 
@@ -50,6 +54,6 @@ export class ChatMessageComponent {
   }
 
   public externalize(imageId: string) {
-    return `http://localhost:3000/api/v1/images/${imageId}`;
+    return this.externalizer.apiUrl(`images/${imageId}`);
   }
 }

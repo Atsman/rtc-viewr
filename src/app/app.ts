@@ -10,8 +10,9 @@ import {Logger} from './services/logger.service';
 import {CONFIG, APP_CONFIG} from './app.config';
 import {ChatService} from './services/chat/chat.service';
 import {JwtService} from './services/jwt.service';
-import {UserService} from './services/user.service';
 import {UserResource} from './services/user.resource';
+
+import {Externalizer} from './services/externalizer';
 
 /*
  * App Component
@@ -21,8 +22,9 @@ import {UserResource} from './services/user.resource';
   selector: 'app',
   providers: [
     ...FORM_PROVIDERS, stateAndDispatcher, Logger,
-    ChatService, JwtService, UserResource,
-    provide(APP_CONFIG, {useValue: CONFIG})],
+    ChatService, JwtService, UserResource, Externalizer,
+    provide(APP_CONFIG, {useValue: CONFIG})
+  ],
   directives: [ ...ROUTER_DIRECTIVES],
   pipes: [],
   styles: [],

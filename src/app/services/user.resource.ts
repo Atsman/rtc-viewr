@@ -4,15 +4,19 @@ import {JwtService} from './jwt.service';
 import {Observable} from 'rxjs';
 import {User} from '../model/user';
 import {Logger} from './logger.service';
+import {Externalizer} from './externalizer';
 
 @Injectable()
 export class UserResource {
   constructor(
     private logger: Logger,
     private http: Http,
-    private jwtService: JwtService) {}
+    private jwtService: JwtService,
+    private externalizer: Externalizer) {
+      this._usersUrl = externalizer.apiUrl('users');
+    }
 
-  private _usersUrl: String = 'http://localhost:3000/api/v1/users';
+  private _usersUrl: String;
 
   public getMe(): Observable<User> {
     const options: RequestOptions = this.getAuthRequestOptions();
