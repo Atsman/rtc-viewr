@@ -24,10 +24,10 @@ import {Observable} from 'rxjs';
           'fa-eye-slash': isVideoPaused
         }"></i>
       </a>
-      <a href="#" class='controls-item controls-item--expand' (click)="expandFullScreen()">
+      <a class='controls-item controls-item--expand' (click)="expandFullScreen()">
         <i class="fa fa-expand"></i>
       </a>
-      <a href="#" class='controls-item controls-item--hangup' (click)="hangup()">
+      <a class='controls-item controls-item--hangup' (click)="hangup()">
         <i class="fa fa-phone"></i>
       </a>
     </div>
@@ -37,8 +37,9 @@ export class VideoSectionComponent implements OnInit {
   public webrtc;
   public isMuted: boolean = false;
   public isVideoPaused: boolean = false;
+  public isFullscreen: boolean = false;
 
-  constructor(@Inject(APP_STATE) private _state: Observable<AppState>) {
+  constructor( @Inject(APP_STATE) private _state: Observable<AppState>) {
 
   }
 
@@ -75,7 +76,7 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public muteAudio(): void {
-    if(this.isMuted) {
+    if (this.isMuted) {
       this.webrtc.unmute();
       this.isMuted = false;
     } else {
@@ -85,7 +86,7 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public pauseVideo(): void {
-    if(this.isVideoPaused) {
+    if (this.isVideoPaused) {
       this.webrtc.resumeVideo();
       this.isVideoPaused = false;
     } else {
@@ -95,7 +96,26 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public expandFullScreen(): void {
-    console.log('expandFullScreen');
+    const video: Element = document.querySelector('#remotesVideos > video');
+    if (!this.isFullscreen) {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.mozRequestFullScreen) {
+        video.mozRequestFullScreen(); // Firefox
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen(); // Chrome and Safari
+      }
+      this.isFullscreen = true;
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
+      this.isFullscreen = false;
+    }
   }
 
   public hangup(): void {
