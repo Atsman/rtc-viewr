@@ -96,7 +96,8 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public expandFullScreen(): void {
-    const video: Element = document.querySelector('#remotesVideos > video');
+    const doc: any = document;
+    const video: any = document.querySelector('#remotesVideos > video');
     if (!this.isFullscreen) {
       if (video.requestFullscreen) {
         video.requestFullscreen();
@@ -107,10 +108,10 @@ export class VideoSectionComponent implements OnInit {
       }
       this.isFullscreen = true;
     } else {
-      if (document.cancelFullScreen) {
-        document.cancelFullScreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
+      if (doc.cancelFullScreen) {
+        doc.cancelFullScreen();
+      } else if (doc.mozCancelFullScreen) {
+        doc.mozCancelFullScreen();
       } else if (document.webkitCancelFullScreen) {
         document.webkitCancelFullScreen();
       }

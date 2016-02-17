@@ -13,7 +13,6 @@ import {JwtService} from './services/jwt.service';
 import {UserResource} from './services/user.resource';
 
 import {Externalizer} from './services/externalizer';
-
 /*
  * App Component
  * Top Level Component

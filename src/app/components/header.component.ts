@@ -20,14 +20,13 @@ import {Action, ShowSidebarAction} from '../state/actions';
             <a class="header-nav__item chat-btn" (click)="onChatClick()">
               <i class="fa fa-comments"></i>
             </a>
-            <a class="header-nav__item">
+            <a class="header-nav__item" (click)="onCodeSharingClick()">
               <i class="fa fa-code"></i>
             </a>
             <a class="header-nav__item">
               <i class="fa fa-cogs"></i>
             </a>
           </nav>
-          {{sideBar|async}}
         </div>
       </div>
     </header>
@@ -38,13 +37,11 @@ export class HeaderComponent {
               @Inject(APP_STATE) private state: Observable<AppState>) {
   }
 
-  public onChatClick(): any {
-    this.dispatcher.next(new ShowSidebarAction());
-    this.state.map((appState: AppState) => console.log(appState));
+  public onChatClick(): void {
+    this.dispatcher.next(new ShowSidebarAction('chat'));
   }
 
-  public get sideBar() {
-    return this.state.map(appState => JSON.stringify(appState.sidebar));
+  public onCodeSharingClick(): void {
+    this.dispatcher.next(new ShowSidebarAction('code-sharing'));
   }
-
 }

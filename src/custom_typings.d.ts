@@ -43,3 +43,9 @@ declare module 'simplewebrtc' {
   }
   export = simple.SimpleWebRtc;
 }
+
+declare var a: any;
+
+declare module 'ace/ace' {
+  export = a;
+}

@@ -11,7 +11,7 @@ import {UserService} from '../services/user.service';
 import {UserResource} from '../services/user.resource';
 
 interface SidebarState {
-  active: boolean;
+  active: string;
 }
 
 interface ChatState {
@@ -36,16 +36,16 @@ export interface AppState {
 
 const INITIAL_STATE: AppState = {
   interview: {
-    id: null
+    id: undefined
   },
   sidebar: {
-    active: false
+    active: ''
   },
   chat: {
     messages: []
   },
   user: {
-    me: null,
+    me: undefined,
     users: {}
   }
 };
@@ -71,9 +71,15 @@ const interviewStateHandler: StateHandler<InterviewState> = (initState, actions)
 const sidebarStateHandler: StateHandler<SidebarState> = (initState, actions) => {
   return actions.scan((state, action) => {
     if(action instanceof ShowSidebarAction) {
-      return {
-        active: !state.active
-      };
+      if(state.active === action.sectionName) {
+        return {
+          active: ''
+        };
+      } else {
+        return {
+          active: action.sectionName
+        };
+      }
     } else {
       return state;
     }

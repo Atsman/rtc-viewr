@@ -1,7 +1,7 @@
 import {Message} from '../model/chat/message';
 import {User} from '../model/user';
 
-export class ShowSidebarAction {}
+export class ShowSidebarAction {constructor(public sectionName: string) {}}
 export class ChangeInterviewId {constructor(public id: string) {}}
 export class SendMessage {constructor(public message: Message) {}}
 export class LoadUser {constructor(public id: string) {}}
