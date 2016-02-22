@@ -8,5 +8,7 @@ export class LoadUser {constructor(public id: string) {}}
 export class UserLoaded {constructor(public user: User) {}}
 export class MeLoaded {constructor(public user: User) {}}
 export class GetMe {constructor() {}}
+export class SendCodeChange {constructor(public code: string) {}}
+export class ReceiveCodeChange {constructor(public code: string) {}}
 
 export type Action = ShowSidebarAction|ChangeInterviewId|SendMessage|LoadUser|UserLoaded|MeLoaded|GetMe;

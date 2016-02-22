@@ -27,11 +27,16 @@ interface UserState {
   users: {[key: string]: User};
 }
 
+interface CodeSharingState {
+  text: string;
+}
+
 export interface AppState {
   interview: InterviewState;
   sidebar: SidebarState;
   chat: ChatState;
   user: UserState;
+  codeSharingState: CodeSharingState
 }
 
 const INITIAL_STATE: AppState = {
@@ -47,6 +52,9 @@ const INITIAL_STATE: AppState = {
   user: {
     me: undefined,
     users: {}
+  },
+  codeSharingState: {
+    text: ''
   }
 };
 

@@ -7,6 +7,7 @@ import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from 'angular2
 import {HTTP_PROVIDERS} from 'angular2/http';
 
 import '../node_modules/ace-builds/src-min-noconflict/ace.js';
+import '../node_modules/ace-builds/src-min-noconflict/mode-javascript.js';
 
 const ENV_PROVIDERS = [];
 
