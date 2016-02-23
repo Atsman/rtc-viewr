@@ -31,13 +31,6 @@
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <base href="<%= webpackConfig.metadata.baseUrl %>">
-
-  {% for (var css in o.htmlWebpackPlugin.files.css) { %}
-  <link href="<%= o.htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
-  {% } %}
-  <!-- base url -->
-  <base href="<%= webpackConfig.metadata.baseUrl %>">
-
 </head>
 
 <body>
@@ -57,9 +50,6 @@
     ga('send', 'pageview');
   </script>
 
-  {% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
-  <script src="{%= o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
-  {% } %}
   <% if (webpackConfig.metadata.ENV === 'development') { %>
   <!-- Webpack Dev Server reload -->
   <script src="http://<%= webpackConfig.metadata.host %>:<%= webpackConfig.metadata.port %>/webpack-dev-server.js"></script>
