@@ -11,4 +11,4 @@ export class GetMe {constructor() {}}
 export class SendCodeChange {constructor(public code: string) {}}
 export class ReceiveCodeChange {constructor(public code: string) {}}
 
-export type Action = ShowSidebarAction|ChangeInterviewId|SendMessage|LoadUser|UserLoaded|MeLoaded|GetMe;
+export type Action = ShowSidebarAction | ChangeInterviewId | SendMessage | LoadUser | UserLoaded | MeLoaded | GetMe | SendCodeChange | ReceiveCodeChange;

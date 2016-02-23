@@ -9,6 +9,7 @@ import {MainComponent} from './components/main';
 import {Logger} from './services/logger.service';
 import {CONFIG, APP_CONFIG} from './app.config';
 import {ChatService} from './services/chat/chat.service';
+import {AppSocket} from './services/chat/app.socket';
 import {JwtService} from './services/jwt.service';
 import {UserResource} from './services/user.resource';
 
@@ -20,7 +21,7 @@ import {Externalizer} from './services/externalizer';
 @Component({
   selector: 'app',
   providers: [
-    ...FORM_PROVIDERS, stateAndDispatcher, Logger,
+    ...FORM_PROVIDERS, stateAndDispatcher, Logger, AppSocket,
     ChatService, JwtService, UserResource, Externalizer,
     provide(APP_CONFIG, {useValue: CONFIG})
   ],

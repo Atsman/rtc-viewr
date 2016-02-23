@@ -4,11 +4,12 @@ import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import * as _ from 'lodash';
 
 import {OpaqueToken, provide, Inject} from 'angular2/core';
-import {Action, ShowSidebarAction, ChangeInterviewId, SendMessage, LoadUser, UserLoaded, GetMe, MeLoaded} from './actions';
+import {Action, ShowSidebarAction, ChangeInterviewId, SendMessage, LoadUser, UserLoaded, GetMe, MeLoaded, SendCodeChange, ReceiveCodeChange} from './actions';
 import {Message} from '../model/chat/message';
 import {User} from '../model/user';
 import {UserService} from '../services/user.service';
 import {UserResource} from '../services/user.resource';
+import {AppSocket} from '../services/chat/app.socket';
 
 interface SidebarState {
   active: string;
@@ -128,14 +129,33 @@ const userStateHandler: UserStateHandler<UserState> = (initState, actions, userS
   }, initState);
 };
 
-function stateFn(initState: AppState, actions: Observable<Action>, userService: UserService): Observable<AppState> {
-  const combine = s => ({sidebar: s[0], chat: s[1], interview: s[2], user: s[3]});
+const codeSharingStateHandler = (initState, actions, appSocket) => {
+  return actions.scan((state, action) => {
+    if(action instanceof SendCodeChange) {
+      appSocket.sendCode(action.code);
+      return _.assign(state, {code: action.code})
+    } else if(action instanceof ReceiveCodeChange) {
+        return _.assign(state, {code: action.code});
+    } else {
+      return state;
+    }
+  });
+};
+
+function stateFn(
+    initState: AppState,
+    actions: Observable<Action>,
+    userService: UserService,
+    appSocket: AppSocket): Observable<AppState> {
+
+  const combine = s => ({ sidebar: s[0], chat: s[1], interview: s[2], user: s[3], codeSharingState: s[4]});
 
   const appStateObs: Observable<AppState> = sidebarStateHandler(initState.sidebar, actions)
     .zip(
       chatStateHandler(initState.chat, actions),
       interviewStateHandler(initState.interview, actions),
-      userStateHandler(initState.user, actions, userService))
+      userStateHandler(initState.user, actions, userService),
+      codeSharingStateHandler(initState.codeSharingState, actions, appSocket))
     .map(combine); // todo: change to reduce.
 
   return wrapIntoBehavior(initState, appStateObs);
@@ -170,5 +190,13 @@ export const stateAndDispatcher = [
     },
     deps: [UserResource, new Inject(DISPATCHER)]
   }),
-  provide(APP_STATE, {useFactory: stateFn, deps: [new Inject(initState), new Inject(DISPATCHER), UserService]})
+  provide(APP_STATE, {
+    useFactory: stateFn,
+    deps: [
+      new Inject(initState),
+      new Inject(DISPATCHER),
+      UserService,
+      AppSocket
+    ]
+  })
 ];
