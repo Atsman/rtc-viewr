@@ -11,9 +11,9 @@ var ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 
 var metadata = {
   title: 'Angular2 Webpack Starter by @gdi2990 from @AngularClass',
-  baseUrl: '/interview/',
+  baseUrl: '/',
   host: 'localhost',
-  port: 3007,
+  port: 3000,
   ENV: ENV
 };
 /*
@@ -71,7 +71,7 @@ module.exports = {
       { test: /\.css$/,   loader: 'raw-loader' },
 
       // support for .html as raw text
-      { test: /\.html$/,  loader: 'raw-loader' }
+      { test: /\.html$/,  loader: 'raw-loader', exclude: [ root('src/index.html') ] }
 
       // if you add a loader include the resolve file extension above
     ]
@@ -83,7 +83,7 @@ module.exports = {
     // static assets
     new CopyWebpackPlugin([ { from: 'src/assets', to: 'assets' } ]),
     // generating html
-    new HtmlWebpackPlugin({ template: 'src/index.html', inject: false }),
+    new HtmlWebpackPlugin({ template: 'src/index.html' }),
     // replace
     new webpack.DefinePlugin({
       'process.env': {
