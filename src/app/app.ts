@@ -4,7 +4,6 @@
 import {Component, provide} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {FORM_PROVIDERS} from 'angular2/common';
-import {stateAndDispatcher} from './state/state';
 import {MainComponent} from './components/main';
 import {Logger} from './services/logger.service';
 import {CONFIG, APP_CONFIG} from './app.config';
@@ -12,7 +11,7 @@ import {ChatService} from './services/chat/chat.service';
 import {AppSocket} from './services/chat/app.socket';
 import {JwtService} from './services/jwt.service';
 import {UserResource} from './services/user.resource';
-
+import {reduxProviders} from './redux/redux.providers';
 import {Externalizer} from './services/externalizer';
 /*
  * App Component
@@ -21,7 +20,7 @@ import {Externalizer} from './services/externalizer';
 @Component({
   selector: 'app',
   providers: [
-    ...FORM_PROVIDERS, stateAndDispatcher, Logger, AppSocket,
+    ...FORM_PROVIDERS, ...reduxProviders, Logger, AppSocket,
     ChatService, JwtService, UserResource, Externalizer,
     provide(APP_CONFIG, {useValue: CONFIG})
   ],

@@ -1,8 +1,9 @@
 import {Component, OnInit, Input, Inject} from 'angular2/core';
 import {NgClass} from 'angular2/common';
 import SimpleWebRtc = require('simplewebrtc');
-import {APP_STATE, DISPATCHER, AppState} from '../state/state';
+import {APP_STATE} from '../redux/Constants';
 import {Observable} from 'rxjs';
+import {Store} from 'redux';
 
 @Component({
   selector: 'video-section',
@@ -34,28 +35,31 @@ import {Observable} from 'rxjs';
   `
 })
 export class VideoSectionComponent implements OnInit {
+  private roomId: string;
   public webrtc;
   public isMuted: boolean = false;
   public isVideoPaused: boolean = false;
   public isFullscreen: boolean = false;
 
-  constructor( @Inject(APP_STATE) private _state: Observable<AppState>) {
+  constructor(@Inject(APP_STATE) private _state: Store) {
+    this._state.subscribe(() => {
+      const newRoomId = this._state.getState().interview.roomId;
+      if(this.roomId !== newRoomId) {
+        this.roomId = newRoomId;
+        this.hangup();
+        this.joinRoom(this.roomId);
+      }
+    })
 
+    this.webrtc = new SimpleWebRtc({
+        localVideoEl: 'mini-video',
+        remoteVideosEl: 'remotesVideos',
+        autoRequestMedia: true
+    });
   }
 
   public ngOnInit(): void {
-    const webrtc = new SimpleWebRtc({
-      localVideoEl: 'mini-video',
-      remoteVideosEl: 'remotesVideos',
-      autoRequestMedia: true
-    });
-
-    webrtc.on('readyToCall', () => {
-      this._state
-        .map(appState => appState.interview.id)
-        .subscribe(webrtc.joinRoom.bind(webrtc));
-    });
-
+    this.joinRoom(this.roomId);
     /*webrtc.on('videoAdded', function (video, peer) {
         console.log('video added', peer);
         var remotes = document.getElementById('remotes');
@@ -71,8 +75,12 @@ export class VideoSectionComponent implements OnInit {
             remotes.appendChild(container);
         }
     });*/
+  }
 
-    this.webrtc = webrtc;
+  public joinRoom(id) {
+    this.webrtc.on('readyToCall', () => {
+      this.webrtc.joinRoom(id);
+    });
   }
 
   public muteAudio(): void {
@@ -120,6 +128,6 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public hangup(): void {
-    console.log('hangup');
+    this.webrtc.leaveRoom();
   }
 }

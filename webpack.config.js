@@ -13,7 +13,7 @@ var metadata = {
   title: 'Angular2 Webpack Starter by @gdi2990 from @AngularClass',
   baseUrl: '/',
   host: 'localhost',
-  port: 3000,
+  port: 4000,
   ENV: ENV
 };
 /*
@@ -106,7 +106,7 @@ module.exports = {
     // contentBase: 'src/',
     historyApiFallback: true,
     watchOptions: { aggregateTimeout: 300, poll: 1000 },
-    https: true
+    //https: true
   },
   // we need this due to problems with es6-shim
   node: {global: 'window', progress: false, crypto: 'empty', module: false, clearImmediate: false, setImmediate: false}

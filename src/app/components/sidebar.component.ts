@@ -1,6 +1,6 @@
 import {Component, Inject} from 'angular2/core';
-import {Observable} from 'rxjs';
-import {APP_STATE, AppState} from '../state/state';
+import {Store} from 'redux';
+import {APP_STATE} from '../redux/Constants';
 import {ChatComponent} from './chat/chat.component';
 import {CodeSharing} from './code-sharing.component';
 
@@ -8,33 +8,41 @@ import {CodeSharing} from './code-sharing.component';
   selector: 'sidebar',
   directives: [ChatComponent, CodeSharing],
   template: `
-    <div class="sidebar" [class.active]="isActive|async">
-      <chat [class.hidden]="isChatHidden|async"></chat>
-      <code-sharing [class.hidden]="isCodeSharingHidden|async"></code-sharing>
+    <div class="sidebar" [class.active]="isActive()">
+      <chat [class.hidden]="isChatHidden()"></chat>
+      <code-sharing [class.hidden]="isCodeSharingHidden()"></code-sharing>
     </div>
   `
 })
 export class SidebarComponent {
-  constructor(@Inject(APP_STATE) private _state: Observable<AppState>) {
+  private _active: string;
+
+  constructor(
+    @Inject(APP_STATE) private store: Store
+    ) {
+    store.subscribe(() => {
+      const {sidebar} = store.getState();
+      this._active = sidebar.active;
+    });
   }
 
-  public get isActive(): Observable<boolean> {
-    return this._state.map((appState: AppState) => appState.sidebar.active && appState.sidebar.active !== '');
+  public isActive(): boolean {
+    return this._active && this._active !== '';
   }
 
-  public get isChatActive(): Observable<boolean> {
-    return this._state.map((appState: AppState) => appState.sidebar.active === 'chat');
+  public isChatActive(): boolean {
+    return this._active === 'chat';
   }
 
-  public get isChatHidden(): Observable<boolean> {
-    return this.isChatActive.map((v: boolean) => !v);
+  public isChatHidden(): boolean {
+    return !this.isChatActive();
   }
 
-  public get isCodeSharingActive(): Observable<boolean> {
-    return this._state.map((appState: AppState) => appState.sidebar.active === 'code-sharing');
+  public isCodeSharingActive(): boolean {
+    return this._active === 'code-sharing';
   }
 
-  public get isCodeSharingHidden(): Observable<boolean> {
-    return this.isCodeSharingActive.map((v: boolean) => !v);
+  public isCodeSharingHidden(): boolean {
+    return !this.isCodeSharingActive();
   }
 }

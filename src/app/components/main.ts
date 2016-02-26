@@ -1,9 +1,11 @@
-import {Component, AfterViewInit, Inject} from 'angular2/core';
+import {Component, AfterViewInit, Inject, OnDestroy} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {Observable, Observer} from 'rxjs';
 
-import {APP_STATE, DISPATCHER, AppState} from '../state/state';
-import {Action, ChangeInterviewId, LoadUser, GetMe} from '../state/actions';
+import {APP_STATE} from '../redux/Constants';
+import {Store} from 'redux';
+import {InterviewActions} from '../redux/Interview';
+import {UserActions} from '../redux/User';
 
 import {HeaderComponent} from './header.component';
 import {VideoSectionComponent} from './video-section.component.ts';
@@ -14,21 +16,30 @@ import {ToolbarManager} from './toolbarManager';
   selector: 'main',
   directives: [HeaderComponent, VideoSectionComponent, SidebarComponent],
   template: `
-    <main class="main" [class.sidebar-active]="isSidebarActive|async">
+    <main class="main" [class.sidebar-active]="isSidebarActive">
       <header-component></header-component>
       <video-section></video-section>
     </main>
     <sidebar></sidebar>
   `
 })
-export class MainComponent implements AfterViewInit {
+export class MainComponent implements AfterViewInit, OnDestroy {
+
+  private _isSidebarActive: boolean;
+  private unsubscribe: Function;
+
   constructor(
     private _routeParams: RouteParams,
-    @Inject(APP_STATE) private state: Observable<AppState>,
-    @Inject(DISPATCHER) private _dispatcher: Observer<Action>) {
+    private interviewActions: InterviewActions,
+    private userActions: UserActions,
+    @Inject(APP_STATE) private state: Store) {
     const interviewId = _routeParams.get('interviewId');
-    this._dispatcher.next(new ChangeInterviewId(interviewId));
-    this._dispatcher.next(new GetMe());
+
+    this.state.dispatch(interviewActions.changeRoom(interviewId));
+    userActions.getMe();
+    this.unsubscribe = this.state.subscribe(() => {
+      this._isSidebarActive = !!this.state.getState().sidebar.active;
+    })
   }
 
   public ngAfterViewInit(): void {
@@ -39,7 +50,11 @@ export class MainComponent implements AfterViewInit {
     }
   }
 
-  get isSidebarActive() {
-    return this.state.map(appState => appState.sidebar.active);
+  public get isSidebarActive() {
+    return this._isSidebarActive;
+  }
+
+  public ngOnDestroy() {
+      this.unsubscribe();
   }
 };

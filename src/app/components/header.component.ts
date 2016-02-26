@@ -1,8 +1,8 @@
 import {Observer, Observable} from 'rxjs';
 import {Component, Inject} from 'angular2/core';
-import {APP_STATE, DISPATCHER, AppState} from '../state/state';
-import {Action, ShowSidebarAction} from '../state/actions';
-
+import {APP_STATE} from '../redux/Constants';
+import {SidebarActions} from '../redux/Sidebar';
+import {Store} from 'redux';
 
 @Component({
   selector: 'header-component',
@@ -33,15 +33,17 @@ import {Action, ShowSidebarAction} from '../state/actions';
   `
 })
 export class HeaderComponent {
-  constructor(@Inject(DISPATCHER) private dispatcher: Observer<Action>,
-              @Inject(APP_STATE) private state: Observable<AppState>) {
+  constructor(
+    @Inject(APP_STATE) private state: Store,
+    private sidebarActions: SidebarActions
+    ) {
   }
 
   public onChatClick(): void {
-    this.dispatcher.next(new ShowSidebarAction('chat'));
+    this.state.dispatch(this.sidebarActions.showSidebar('chat'));
   }
 
   public onCodeSharingClick(): void {
-    this.dispatcher.next(new ShowSidebarAction('code-sharing'));
+    this.state.dispatch(this.sidebarActions.showSidebar('code-sharing'));
   }
 }

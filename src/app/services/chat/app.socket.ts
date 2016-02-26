@@ -1,6 +1,5 @@
 import {Injectable, Inject} from 'angular2/core';
 import * as io from 'socket.io-client';
-import * as _ from 'lodash';
 import {Observable} from 'rxjs';
 import {Message} from '../../model/chat/Message';
 import {APP_CONFIG, Config} from '../../app.config';
@@ -10,7 +9,8 @@ const SOCKET_ACTIONS = {
   SEND_MESSAGE: 'sendMessage',
   NEW_MESSAGE: 'newMessage',
   SEND_CODE: 'sendCode',
-  RECEIVE_CODE_CHANGE: 'receiveCodeChange'
+  RECEIVE_CODE_CHANGE: 'receiveCodeChange',
+  LEAVE_ROOM: 'LEAVE_ROOM'
 };
 
 const SOCKET_EVENTS = {
@@ -30,7 +30,7 @@ export class AppSocket {
 
   constructor(@Inject(APP_CONFIG) config: Config) {
     this.url = config.chatSocketUrl;
-    if(_.isEmpty(this.url)) {
+    if(!this.url || this.url === '') {
       throw new Error('Url is requored to create ChatSocket');
     }
     this.init();
@@ -55,6 +55,10 @@ export class AppSocket {
 
   public joinRoom(roomId: string): void {
     this.socket.emit(SOCKET_ACTIONS.JOIN_ROOM, roomId);
+  }
+
+  public leaveRoom(roomId: string): void {
+    this.socket.emit(SOCKET_ACTIONS.LEAVE_ROOM, roomId);
   }
 
   public sendMessage(message: Message): void {

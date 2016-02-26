@@ -1,11 +1,12 @@
-import {Component, Inject, OnInit} from 'angular2/core';
+import {Component, Inject, OnInit, OnDestroy} from 'angular2/core';
 import {Observable, Observer} from 'rxjs';
+import {Store} from 'redux';
 
 import {ChatMessageComponent} from './chat-message.component';
 import {Message} from '../../model/chat/message';
 
-import {APP_STATE, DISPATCHER, AppState} from '../../state/state';
-import {Action, SendMessage} from '../../state/actions';
+import {APP_STATE} from '../../redux/Constants';
+import {ChatActions} from '../../redux/Chat';
 
 import {ChatService} from '../../services/chat/chat.service';
 import {User} from '../../model/user';
@@ -17,7 +18,7 @@ import {User} from '../../model/user';
     <div class="chat">
       <div class="chat-history">
         <ul>
-          <chat-message *ngFor="#message of messages|async" [message]="message"></chat-message>
+          <chat-message *ngFor="#message of messages" [message]="message"></chat-message>
         </ul>
       </div>
       <div class="chat-controls">
@@ -35,17 +36,21 @@ import {User} from '../../model/user';
     </div>
   `
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   public message: string;
-
+  public messages: Array<Message>;
   private me: User;
+  private unsubscribe: Function;
 
   constructor(
-    @Inject(APP_STATE) private _state: Observable<AppState>,
-    @Inject(DISPATCHER) private _dispatcher: Observer<Action>,
+    @Inject(APP_STATE) private _state: Store,
+    private chatActions: ChatActions,
     private chatService: ChatService) {
-
-    _state.subscribe(({user}) => this.me = user.users[user.me]);
+    this.unsubscribe = _state.subscribe(() => {
+      const {user, chat} = this._state.getState();
+      this.me = user.users[user.me];
+      this.messages = chat.messages;
+    });
   }
 
   public ngOnInit(): void {
@@ -58,12 +63,12 @@ export class ChatComponent implements OnInit {
       time: new Date(),
       message: this.message
     };
-    this._dispatcher.next(new SendMessage(message));
+    this._state.dispatch(this.chatActions.sendMessage(message));
     this.message = '';
     this.chatService.sendMessage(message);
   }
 
-  public get messages(): Observable<Array<Message>> {
-    return this._state.map(appState => appState.chat.messages);
+  public ngOnDestroy() {
+    this.unsubscribe();
   }
 }

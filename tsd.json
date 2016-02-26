@@ -13,6 +13,9 @@
     },
     "socket.io-client/socket.io-client.d.ts": {
       "commit": "5d0f2126c8dac8fce0ff020218aea06607213b0d"
+    },
+    "redux/redux.d.ts": {
+      "commit": "ab2462147a313f69e7118625cfcce21c005fa4af"
     }
   }
 }

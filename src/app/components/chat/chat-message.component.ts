@@ -1,7 +1,8 @@
-import {Component, Input, Inject} from 'angular2/core';
+import {Component, Input, Inject, OnDestroy} from 'angular2/core';
 import {Message} from '../../model/chat/message';
-import {APP_STATE, AppState} from '../../state/state';
+import {APP_STATE} from '../../redux/Constants';
 import {Observable} from 'rxjs';
+import {Store} from 'redux';
 import {User} from '../../model/user';
 import {Externalizer} from '../../services/externalizer';
 
@@ -12,7 +13,7 @@ import {Externalizer} from '../../services/externalizer';
       'chat-item--me': isSendByMe()|async,
       'chat-item--other': isSendByOther()|async
     }">
-      <img src="{{getUserImage()|async}}" alt="" />
+      <img src="{{getUserImage()}}" alt="" />
       <div class="message">
         <span class="message__user-name">{{message.username}}</span>
         <time class="message__time">{{message.time | date}}</time>
@@ -21,39 +22,45 @@ import {Externalizer} from '../../services/externalizer';
     </li>
   `
 })
-export class ChatMessageComponent {
+export class ChatMessageComponent implements OnDestroy {
   @Input() public message: Message;
 
-  private me: Observable<User>;
+  private me: User;
+  private users: Array<User>;
+  private unsubscribe: Function;
 
   constructor(
-    @Inject(APP_STATE) private appState: Observable<AppState>,
+    @Inject(APP_STATE) private appState: Store,
     private externalizer: Externalizer
   ) {
-    this.me = appState.map(({user}) => user.users[user.me]);
+    this.unsubscribe = appState.subscribe(() => {
+      const appState = this.appState.getState();
+      this.me = appState.user.users[appState.user.me];
+      this.users = appState.user.users;
+    })
   }
 
   public getUserImage() {
-    const self = this;
-    return this.appState.map(state => {
-      const user = state.user.users[self.message.userId];
-      if(user) {
-        return self.externalize(user.imageId);
-      }
-      return '';
-    });
+    const user = this.users[this.message.userId];
+    if(user) {
+      return this.externalize(user.imageId);
+    }
+    return '';
   }
 
   public isSendByMe() {
-    const self = this;
-    return this.me.map((user) => user._id === self.message.userId);
+    return this.me._id === this.message.userId;
   }
 
   public isSendByOther() {
-    return this.isSendByMe().map(v => !v);
+    return !this.isSendByMe();
   }
 
   public externalize(imageId: string) {
     return this.externalizer.apiUrl(`images/${imageId}`);
+  }
+
+  public ngOnDestroy() {
+    this.unsubscribe();
   }
 }
