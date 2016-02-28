@@ -6,10 +6,10 @@ export const SHOW_SIDEBAR = 'SHOW_SIDEBAR';
 interface ShowSidebarAction extends Action {
   payload: {
     activeElement: string
-  }
+  };
 }
 
-interface SidebarState {
+export interface SidebarState {
   active: string;
 }
 
@@ -19,16 +19,16 @@ const initialState: SidebarState = {
 
 function showSidebarReducer(state: SidebarState, action: ShowSidebarAction) {
   let newActive = '';
-  if (state.active !== action.payload.activeElement) {
-      newActive = action.payload.activeElement
+  if(state.active !== action.payload.activeElement) {
+    newActive = action.payload.activeElement;
   }
   return Object.assign({}, state, {
-      active: newActive
+    active: newActive
   });
 }
 
 export function sidebar(state: SidebarState = initialState, action: Action): SidebarState {
-  switch (action.type) {
+  switch(action.type) {
     case SHOW_SIDEBAR:
       return showSidebarReducer(state, action);
     default:
@@ -44,6 +44,6 @@ export class SidebarActions {
       payload: {
         activeElement
       }
-    }
+    };
   }
 }

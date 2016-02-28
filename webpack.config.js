@@ -11,9 +11,9 @@ var ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 
 var metadata = {
   title: 'Angular2 Webpack Starter by @gdi2990 from @AngularClass',
-  baseUrl: '/',
+  baseUrl: '/interview/',
   host: 'localhost',
-  port: 4000,
+  port: 3007,
   ENV: ENV
 };
 /*
@@ -106,7 +106,7 @@ module.exports = {
     // contentBase: 'src/',
     historyApiFallback: true,
     watchOptions: { aggregateTimeout: 300, poll: 1000 },
-    //https: true
+    https: true
   },
   // we need this due to problems with es6-shim
   node: {global: 'window', progress: false, crypto: 'empty', module: false, clearImmediate: false, setImmediate: false}

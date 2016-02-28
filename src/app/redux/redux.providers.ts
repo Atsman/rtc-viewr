@@ -1,5 +1,5 @@
 import {provide, OpaqueToken} from 'angular2/core';
-import {appStore} from './AppStore';
+import {appStore, AppStore} from './AppStore';
 import {SidebarActions} from './Sidebar';
 import {ChatActions} from './Chat';
 import {InterviewActions} from './Interview';
@@ -9,6 +9,7 @@ import {APP_STATE} from './Constants';
 
 export const reduxProviders = [
   provide(APP_STATE, { useValue: appStore }),
+  AppStore,
   SidebarActions,
   ChatActions,
   InterviewActions,

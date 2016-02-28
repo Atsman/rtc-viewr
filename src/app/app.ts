@@ -7,8 +7,8 @@ import {FORM_PROVIDERS} from 'angular2/common';
 import {MainComponent} from './components/main';
 import {Logger} from './services/logger.service';
 import {CONFIG, APP_CONFIG} from './app.config';
-import {ChatService} from './services/chat/chat.service';
-import {AppSocket} from './services/chat/app.socket';
+import {ChatService} from './services/chat.service.ts';
+import {AppSocket} from './services/app.socket.ts';
 import {JwtService} from './services/jwt.service';
 import {UserResource} from './services/user.resource';
 import {reduxProviders} from './redux/redux.providers';
@@ -24,17 +24,13 @@ import {Externalizer} from './services/externalizer';
     ChatService, JwtService, UserResource, Externalizer,
     provide(APP_CONFIG, {useValue: CONFIG})
   ],
-  directives: [ ...ROUTER_DIRECTIVES],
+  directives: [MainComponent],
   pipes: [],
   styles: [],
   template: `
-    <router-outlet></router-outlet>
+    <main></main>
   `
 })
-@RouteConfig([
-  { path: '/', component: MainComponent, name: 'Index' },
-  { path: '/**', redirectTo: ['Index'] }
-])
 export class App {
   public angularclassLogo: string = 'assets/img/angularclass-avatar.png';
   public name: string = 'Rtc viewer';

@@ -6,16 +6,16 @@ const CHANGE_ROOM = 'CHANGE_ROOM';
 interface IChangeRoomAction extends Action {
   payload: {
     roomId
-  }
+  };
 }
 
-interface InterviewState {
-  roomId: string
+export interface InterviewState {
+  roomId: string;
 }
 
 const initialState: InterviewState = {
   roomId: undefined
-}
+};
 
 export function interview(state: InterviewState = initialState, action: Action): InterviewState {
   switch (action.type) {
@@ -36,6 +36,6 @@ export class InterviewActions {
       payload: {
         roomId
       }
-    }
+    };
   }
 }

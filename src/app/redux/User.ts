@@ -13,22 +13,22 @@ const USER_LOADED = 'USER_LOADED';
 interface MeLoadedAction extends Action {
   payload: {
     user: User
-  }
+  };
 }
 
 interface GetUserAction extends Action {
   payload: {
     userId: string
-  }
+  };
 }
 
 interface UserLoadedAction extends Action {
   payload: {
     user: User
-  }
+  };
 }
 
-interface UserState {
+export interface UserState {
   me: string;
   users: { [key: string]: User };
 }
@@ -43,13 +43,16 @@ function meLoadedReducer(state: UserState, action: MeLoadedAction): UserState {
     payload: {
       user: me
     }
-  })
+  });
 }
 
 function userLoadedReducer(state: UserState, action: UserLoadedAction): UserState {
   const newUser = action.payload.user;
-  return Object.assign({}, state.users, {
+  const users = Object.assign({}, state.users, {
     [newUser._id]: newUser
+  });
+  return Object.assign({}, state, {
+    users
   });
 }
 
@@ -79,12 +82,12 @@ export class UserActions {
 
   getMe() {
     this.userResource.getMe().subscribe((user) => {
-      this.appState.dispatch({
+      this.appState.dispatch(<MeLoadedAction> {
         type: ME_LOADED,
         payload: {
-          me: user
+          user: user
         }
-      })
+      });
     }, (err) => {
       if(err.status === 401) {
         //TODO: add redirect here;

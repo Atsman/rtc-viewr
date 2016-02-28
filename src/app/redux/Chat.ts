@@ -2,15 +2,15 @@ import {Injectable} from 'angular2/core';
 import {Action} from './Action';
 import {Message} from '../model/chat/message';
 
-const SEND_MESSAGE = 'SEND_MESSAGESEND_MESSAGE';
+const SEND_MESSAGE = 'SEND_MESSAGE';
 
 interface ISendMessageAction extends Action {
   payload: {
     message: Message;
-  }
+  };
 }
 
-interface ChatState {
+export interface ChatState {
     messages: Message[];
 }
 
@@ -37,6 +37,6 @@ export class ChatActions {
       payload: {
         message
       }
-    }
+    };
   }
 }

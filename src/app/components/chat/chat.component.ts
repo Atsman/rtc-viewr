@@ -5,10 +5,11 @@ import {Store} from 'redux';
 import {ChatMessageComponent} from './chat-message.component';
 import {Message} from '../../model/chat/message';
 
+import {AppStore} from '../../redux/AppStore';
 import {APP_STATE} from '../../redux/Constants';
 import {ChatActions} from '../../redux/Chat';
 
-import {ChatService} from '../../services/chat/chat.service';
+import {ChatService} from '../../services/chat.service';
 import {User} from '../../model/user';
 
 @Component({
@@ -18,7 +19,7 @@ import {User} from '../../model/user';
     <div class="chat">
       <div class="chat-history">
         <ul>
-          <chat-message *ngFor="#message of messages" [message]="message"></chat-message>
+          <chat-message *ngFor="#message of messages" [message]="message" [me]="me" [users]="users"></chat-message>
         </ul>
       </div>
       <div class="chat-controls">
@@ -39,21 +40,28 @@ import {User} from '../../model/user';
 export class ChatComponent implements OnInit, OnDestroy {
   public message: string;
   public messages: Array<Message>;
-  private me: User;
+  public me: User;
+  public users: Object;
   private unsubscribe: Function;
 
   constructor(
-    @Inject(APP_STATE) private _state: Store,
+    private store: AppStore,
     private chatActions: ChatActions,
     private chatService: ChatService) {
-    this.unsubscribe = _state.subscribe(() => {
-      const {user, chat} = this._state.getState();
-      this.me = user.users[user.me];
-      this.messages = chat.messages;
-    });
   }
 
   public ngOnInit(): void {
+    this.chatService.initialize();
+
+    this.store.getUserState().subscribe((userState) => {
+      if(userState.me) {
+        this.me = userState.users[userState.me];
+      }
+      this.users = userState.users;
+    });
+    this.store.getChatState().subscribe((chatState) => {
+      this.messages = chatState.messages;
+    });
     this.chatService.joinRoom();
   }
 
@@ -63,12 +71,13 @@ export class ChatComponent implements OnInit, OnDestroy {
       time: new Date(),
       message: this.message
     };
-    this._state.dispatch(this.chatActions.sendMessage(message));
+    this.store.dispatch(this.chatActions.sendMessage(message));
     this.message = '';
     this.chatService.sendMessage(message);
   }
 
   public ngOnDestroy() {
     this.unsubscribe();
+    this.chatService.destroy();
   }
 }

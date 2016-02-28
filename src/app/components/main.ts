@@ -29,17 +29,17 @@ export class MainComponent implements AfterViewInit, OnDestroy {
   private unsubscribe: Function;
 
   constructor(
-    private _routeParams: RouteParams,
+    //private _routeParams: RouteParams,
     private interviewActions: InterviewActions,
     private userActions: UserActions,
     @Inject(APP_STATE) private state: Store) {
-    const interviewId = _routeParams.get('interviewId');
+    const interviewId = 111; //_routeParams.get('interviewId');
 
     this.state.dispatch(interviewActions.changeRoom(interviewId));
     userActions.getMe();
     this.unsubscribe = this.state.subscribe(() => {
       this._isSidebarActive = !!this.state.getState().sidebar.active;
-    })
+    });
   }
 
   public ngAfterViewInit(): void {
@@ -57,4 +57,4 @@ export class MainComponent implements AfterViewInit, OnDestroy {
   public ngOnDestroy() {
       this.unsubscribe();
   }
-};
+}

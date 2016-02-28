@@ -78,8 +78,9 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public joinRoom(id) {
+    console.log('join room id: ', id);
     this.webrtc.on('readyToCall', () => {
-      this.webrtc.joinRoom(id);
+      //this.webrtc.joinRoom(id);
     });
   }
 

@@ -1,8 +1,8 @@
 import {Injectable, Inject} from 'angular2/core';
 import * as io from 'socket.io-client';
 import {Observable} from 'rxjs';
-import {Message} from '../../model/chat/Message';
-import {APP_CONFIG, Config} from '../../app.config';
+import {Message} from '../model/chat/message';
+import {APP_CONFIG, Config} from '../app.config.ts';
 
 const SOCKET_ACTIONS = {
   JOIN_ROOM: 'joinRoom',
@@ -36,7 +36,7 @@ export class AppSocket {
     this.init();
   }
 
-  public init() {
+  private init() {
     this.socket = io(this.url);
     this.socket.on(SOCKET_EVENTS.CONNECT, () => console.log('Socket connected'));
     this.socket.on(SOCKET_EVENTS.DISCONNECT, () => console.log('Socket disconnect'));
@@ -54,6 +54,7 @@ export class AppSocket {
   }
 
   public joinRoom(roomId: string): void {
+    console.log('socket room join!');
     this.socket.emit(SOCKET_ACTIONS.JOIN_ROOM, roomId);
   }
 

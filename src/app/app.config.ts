@@ -6,8 +6,8 @@ export interface Config {
 }
 
 export const CONFIG: Config = {
-  apiEndpoint: 'http://localhost:3000',
-  chatSocketUrl: 'http://localhost:3000/chat'
+  apiEndpoint: 'https://localhost:8123',
+  chatSocketUrl: 'https://localhost:8123/chat'
 };
 
 export const APP_CONFIG = new OpaqueToken('app.config');
