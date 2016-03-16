@@ -88,10 +88,8 @@ export class UserActions {
           user: user
         }
       });
-    }, (err) => {
-      if(err.status === 401) {
-        //TODO: add redirect here;
-      }
+    }, () => {
+      window.location.assign('/');
     }) ;
   }
 

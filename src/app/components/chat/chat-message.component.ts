@@ -1,9 +1,7 @@
-import {Component, Input, Inject, OnDestroy, OnInit} from 'angular2/core';
+import {Component, Input} from 'angular2/core';
 import {Message} from '../../model/chat/message';
-import {APP_STATE} from '../../redux/Constants';
 import {AppStore} from '../../redux/AppStore';
 import {Observable} from 'rxjs';
-import {Store} from 'redux';
 import {User} from '../../model/user';
 import {Externalizer} from '../../services/externalizer';
 

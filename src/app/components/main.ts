@@ -1,8 +1,7 @@
-import {Component, AfterViewInit, Inject, OnDestroy} from 'angular2/core';
+import {Component, AfterViewInit} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {Observable, Observer} from 'rxjs';
 
-import {APP_STATE} from '../redux/Constants';
 import {AppStore} from '../redux/AppStore';
 import {InterviewActions} from '../redux/Interview';
 import {UserActions} from '../redux/User';

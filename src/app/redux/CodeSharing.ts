@@ -22,11 +22,23 @@ interface ChangeLangAction extends Action {
 export interface CodeSharingState {
   lang: string;
   code: string;
+  cursor: {
+    column: number;
+    row: number;
+  };
+}
+
+export interface CodeSharingMessage extends CodeSharingState {
+  roomId: string;
 }
 
 const initialState: CodeSharingState = {
   lang: 'ace/mode/javascript',
-  code: ''
+  code: '',
+  cursor: {
+    column: 0,
+    row: 0
+  }
 };
 
 export function codeSharing(state: CodeSharingState = initialState, action: Action): CodeSharingState {
@@ -50,16 +62,16 @@ export class CodeSharingActions {
     @Inject(APP_STATE) private state: Store,
     private appSocket: AppSocket
   ) {
-    appSocket.receivedCode.subscribe((code: string) => {
+    appSocket.receivedCode.subscribe((code) => {
       state.dispatch(this.refreshCode(code));
     });
   }
 
-  public refreshCode(code: string): RefreshCodeAction {
+  public refreshCode(code: CodeSharingMessage): RefreshCodeAction {
     return {
       type: REFRESH_CODE,
       payload: {
-        code
+        code: code.code
       }
     };
   }
@@ -73,8 +85,8 @@ export class CodeSharingActions {
     };
   }
 
-  public sendCode(code: string) {
-    this.appSocket.sendCode(code);
-    return this.refreshCode(code);
+  public sendCode(codeState: CodeSharingMessage) {
+    this.appSocket.sendCode(codeState);
+    return this.refreshCode(codeState);
   }
 }

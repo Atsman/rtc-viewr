@@ -3,6 +3,7 @@ import * as io from 'socket.io-client';
 import {Observable} from 'rxjs';
 import {Message} from '../model/chat/message';
 import {APP_CONFIG, Config} from '../app.config.ts';
+import {CodeSharingMessage} from '../redux/CodeSharing';
 
 const SOCKET_ACTIONS = {
   JOIN_ROOM: 'joinRoom',
@@ -25,7 +26,7 @@ const SOCKET_EVENTS = {
 export class AppSocket {
   private socket: SocketIOClient.Socket;
   private _receivedMessages: Observable<Message>;
-  private _receivedCode: Observable<string>;
+  private _receivedCode: Observable<CodeSharingMessage>;
   private url: string;
 
   constructor(@Inject(APP_CONFIG) config: Config) {
@@ -49,7 +50,7 @@ export class AppSocket {
     return this._receivedMessages;
   }
 
-  public get receivedCode(): Observable<string> {
+  public get receivedCode(): Observable<CodeSharingMessage> {
     return this._receivedCode;
   }
 
@@ -66,7 +67,7 @@ export class AppSocket {
     this.socket.emit(SOCKET_ACTIONS.SEND_MESSAGE, message);
   }
 
-  public sendCode(code: string): void {
+  public sendCode(code: CodeSharingMessage): void {
     this.socket.emit(SOCKET_ACTIONS.SEND_CODE, code);
   }
 }

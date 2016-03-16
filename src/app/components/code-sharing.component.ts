@@ -1,7 +1,7 @@
 import {Component, OnInit, Inject} from 'angular2/core';
-import {Store} from 'redux';
-import {APP_STATE} from '../redux/Constants';
 import {CodeSharingActions} from '../redux/CodeSharing';
+import {AppStore} from '../redux/AppStore';
+
 declare var ace: any;
 
 @Component({
@@ -25,14 +25,13 @@ declare var ace: any;
 })
 export class CodeSharing implements OnInit {
   private lang: string;
-  private unsubscribe: Function;
   private _languages = [
     { value: 'ace/mode/javascript', label: 'javascript' }
   ];
   private editor;
 
   constructor(
-    @Inject(APP_STATE) private store: Store,
+    private store: AppStore,
     private codeSharingAction: CodeSharingActions
   ) {
   }
@@ -44,16 +43,28 @@ export class CodeSharing implements OnInit {
     setInterval(() => this.editor.resize(), 500);
     this.editor.on('change', (e) => {
       if (this.editor.curOp && this.editor.curOp.command.name) {
-        this.store.dispatch(this.codeSharingAction.sendCode(this.editor.getValue()));
+        const appState = this.store.getCurrentState();
+        const cursor = this.editor.selection.getCursor();
+        console.log(cursor);
+        const codeSharingMessage = {
+          code: this.editor.getValue(),
+          roomId: appState.interview.roomId,
+          lang: appState.codeSharing.lang,
+          cursor: {
+            column: <number> cursor.column,
+            row: <number> cursor.row
+          }
+        };
+        this.store.dispatch(this.codeSharingAction.sendCode(codeSharingMessage));
       }
     });
 
-    this.unsubscribe = this.store.subscribe(() => {
-      const {codeSharing} = this.store.getState();
+    this.store.getCodeSharingState().subscribe((codeSharing) => {
       this.lang = codeSharing.lang;
       this.editor.getSession().setMode(this.lang);
       if(codeSharing.code !== this.editor.getValue()) {
         this.editor.getSession().setValue(codeSharing.code, 1);
+        this.editor.gotoLine(codeSharing.cursor.row, codeSharing.cursor.column);
       }
     });
   }
