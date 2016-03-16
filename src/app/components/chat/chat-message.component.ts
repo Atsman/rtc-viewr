@@ -26,7 +26,6 @@ import {Externalizer} from '../../services/externalizer';
 export class ChatMessageComponent {
   @Input() public message: Message;
   @Input() public me: User;
-  @Input() public users: Object;
 
   constructor(
     private externalizer: Externalizer
@@ -34,11 +33,7 @@ export class ChatMessageComponent {
   }
 
   public getUserImage() {
-    const user = this.users[this.message.userId];
-    if(user) {
-      return this.externalize(user.imageId);
-    }
-    return '';
+    return this.externalize(this.message.userImage);
   }
 
   public isSendByMe() {

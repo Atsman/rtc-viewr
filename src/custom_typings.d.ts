@@ -44,8 +44,12 @@ declare module 'simplewebrtc' {
   export = simple.SimpleWebRtc;
 }
 
-declare var a: any;
+declare module QS {
+  function decide(qs: string, sep: string, eq: string, options: any): any;
+}
 
 declare module 'ace/ace' {
+  var a: any;
   export = a;
 }
+

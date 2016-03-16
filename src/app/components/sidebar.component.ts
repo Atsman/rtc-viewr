@@ -1,6 +1,7 @@
 import {Component, Inject} from 'angular2/core';
 import {Store} from 'redux';
-import {APP_STATE} from '../redux/Constants';
+import {AppStore} from '../redux/AppStore';
+import {SidebarState} from '../redux/Sidebar';
 import {ChatComponent} from './chat/chat.component';
 import {CodeSharing} from './code-sharing.component';
 
@@ -18,10 +19,9 @@ export class SidebarComponent {
   private _active: string;
 
   constructor(
-    @Inject(APP_STATE) private store: Store
+    private store: AppStore
     ) {
-    store.subscribe(() => {
-      const {sidebar} = store.getState();
+    store.getSidebarState().subscribe((sidebar: SidebarState) => {
       this._active = sidebar.active;
     });
   }

@@ -1,5 +1,5 @@
 import {Injectable, Inject} from 'angular2/core';
-import {APP_STATE} from '../redux/Constants';
+import {AppStore} from '../redux/AppStore';
 import {Store} from 'redux';
 import {ChatActions} from '../redux/Chat';
 import {Observable, Observer} from 'rxjs';
@@ -13,31 +13,31 @@ export class ChatService {
   private roomId: string;
 
   constructor(
-    @Inject(APP_STATE) private _state: Store,
+    private _state: AppStore,
     private chatActions: ChatActions,
     private socket: AppSocket
   ) {
   }
 
   public initialize() {
+    this._state.getInterviewState().subscribe((interviewState) => {
+      const newRoomId = interviewState.roomId;
+      if(this.roomId !== newRoomId) {
+        if(this.roomId) {
+          this.socket.leaveRoom(this.roomId);
+        }
+        this.roomId = newRoomId;
+        this.joinRoom();
+      }
+    });
+
     this.socket.receivedMessages.subscribe((message: Message) => {
-      if(this._state.getState().user.me !== message.userId) {
+      console.log(message);
+      const userState = this._state.getCurrentState().user;
+      if(userState.me !== message.userId) {
         this._state.dispatch(this.chatActions.sendMessage(message));
       }
     });
-    this.unsubscribe = this._state.subscribe(() => {
-      const { interview } = this._state.getState();
-      if (this.roomId && this.roomId !== interview.roomId) {
-        this.socket.leaveRoom(this.roomId);
-        this.roomId = interview.roomId;
-      }
-    });
-  }
-
-  public destroy() {
-    if(this.unsubscribe) {
-      this.unsubscribe();
-    }
   }
 
   public sendMessage(message: Message): void {
@@ -45,7 +45,7 @@ export class ChatService {
   }
 
   public joinRoom(): void {
-    console.log('joinRoom!');
+    console.log('joinRoom, roomId: ' + this.roomId);
     this.socket.joinRoom(this.roomId);
   }
 }

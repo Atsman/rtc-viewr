@@ -1,5 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Action} from './Action';
+import {parse} from 'querystring';
 
 const CHANGE_ROOM = 'CHANGE_ROOM';
 
@@ -14,7 +15,7 @@ export interface InterviewState {
 }
 
 const initialState: InterviewState = {
-  roomId: undefined
+  roomId: parse(window.location.search)['?interviewId']
 };
 
 export function interview(state: InterviewState = initialState, action: Action): InterviewState {

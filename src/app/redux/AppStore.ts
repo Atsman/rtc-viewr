@@ -1,11 +1,12 @@
 import {Injectable} from 'angular2/core';
 import {combineReducers, createStore, applyMiddleware} from 'redux';
-import {Observable} from 'rxjs';
+import {Observable, BehaviorSubject} from 'rxjs';
 import {sidebar, SidebarState} from './Sidebar';
 import {chat, ChatState} from './Chat';
 import {interview, InterviewState} from './Interview';
 import {user, UserState} from './User';
 import {codeSharing, CodeSharingState} from './CodeSharing';
+import {User} from '../model/user';
 
 const thunk = require('redux-thunk');
 const createLogger: any = require('redux-logger');
@@ -20,29 +21,44 @@ const appReducer = combineReducers({
 
 const logger = createLogger();
 
-export const appStore = createStore(
+export const reduxStore = createStore(
   appReducer,
   applyMiddleware(thunk, logger)
 );
 
+interface AppState {
+  chat: ChatState;
+  user: UserState;
+  sidebar: SidebarState;
+  interview: InterviewState;
+  codeSharing: CodeSharingState;
+}
+
 @Injectable()
 export class AppStore {
-  private state: Observable<any>;
+  private state: BehaviorSubject<AppState>;
 
   constructor() {
-    this.state = Observable.create((observer) => {
-      const unsubscribe = appStore.subscribe(() => {
-        observer.next(appStore.getState());
-        return unsubscribe;
-      });
+    this.state = new BehaviorSubject(reduxStore.getState());
+    const unsubscribe = reduxStore.subscribe(() => {
+      this.state.next(reduxStore.getState());
     });
   }
 
   public dispatch(action) {
-    appStore.dispatch(action);
+    reduxStore.dispatch(action);
   }
 
-  public getState(): Observable<any> {
+  public getCurrentState(): AppState {
+    return reduxStore.getState();
+  }
+
+  public getMe(): User {
+    const user = this.getCurrentState().user;
+    return user.users[user.me];
+  }
+
+  public getState(): BehaviorSubject<AppState> {
     return this.state;
   }
 

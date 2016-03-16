@@ -3,9 +3,10 @@ import {RouteParams} from 'angular2/router';
 import {Observable, Observer} from 'rxjs';
 
 import {APP_STATE} from '../redux/Constants';
-import {Store} from 'redux';
+import {AppStore} from '../redux/AppStore';
 import {InterviewActions} from '../redux/Interview';
 import {UserActions} from '../redux/User';
+import {SidebarState} from '../redux/Sidebar';
 
 import {HeaderComponent} from './header.component';
 import {VideoSectionComponent} from './video-section.component.ts';
@@ -23,22 +24,18 @@ import {ToolbarManager} from './toolbarManager';
     <sidebar></sidebar>
   `
 })
-export class MainComponent implements AfterViewInit, OnDestroy {
+export class MainComponent implements AfterViewInit {
 
   private _isSidebarActive: boolean;
-  private unsubscribe: Function;
 
   constructor(
     //private _routeParams: RouteParams,
     private interviewActions: InterviewActions,
     private userActions: UserActions,
-    @Inject(APP_STATE) private state: Store) {
-    const interviewId = 111; //_routeParams.get('interviewId');
-
-    this.state.dispatch(interviewActions.changeRoom(interviewId));
+    private state: AppStore) {
     userActions.getMe();
-    this.unsubscribe = this.state.subscribe(() => {
-      this._isSidebarActive = !!this.state.getState().sidebar.active;
+    this.state.getSidebarState().subscribe((sidebar: SidebarState) => {
+      this._isSidebarActive = !!sidebar.active;
     });
   }
 
@@ -52,9 +49,5 @@ export class MainComponent implements AfterViewInit, OnDestroy {
 
   public get isSidebarActive() {
     return this._isSidebarActive;
-  }
-
-  public ngOnDestroy() {
-      this.unsubscribe();
   }
 }

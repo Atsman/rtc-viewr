@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, Inject} from 'angular2/core';
 import {NgClass} from 'angular2/common';
 import SimpleWebRtc = require('simplewebrtc');
-import {APP_STATE} from '../redux/Constants';
+import {AppStore} from '../redux/AppStore';
 import {Observable} from 'rxjs';
 import {Store} from 'redux';
 
@@ -41,46 +41,47 @@ export class VideoSectionComponent implements OnInit {
   public isVideoPaused: boolean = false;
   public isFullscreen: boolean = false;
 
-  constructor(@Inject(APP_STATE) private _state: Store) {
-    this._state.subscribe(() => {
-      const newRoomId = this._state.getState().interview.roomId;
-      if(this.roomId !== newRoomId) {
-        this.roomId = newRoomId;
-        this.hangup();
-        this.joinRoom(this.roomId);
-      }
-    })
-
+  constructor(private _state: AppStore) {
     this.webrtc = new SimpleWebRtc({
         localVideoEl: 'mini-video',
         remoteVideosEl: 'remotesVideos',
         autoRequestMedia: true
     });
+
+    this._state.getInterviewState().subscribe((interview) => {
+      const newRoomId = interview.roomId;
+      if(this.roomId !== newRoomId) {
+        this.roomId = newRoomId;
+        this.hangup();
+        if(this.roomId) {
+          this.joinRoom(this.roomId);
+        }
+      }
+    });
   }
 
   public ngOnInit(): void {
-    this.joinRoom(this.roomId);
-    /*webrtc.on('videoAdded', function (video, peer) {
-        console.log('video added', peer);
-        var remotes = document.getElementById('remotes');
-        if (remotes) {
-            var container = document.createElement('div');
-            container.className = 'videoContainer';
-            container.id = 'container_' + webrtc.getDomId(peer);
-            container.appendChild(video);
+    this.webrtc.on('videoAdded', function (video, peer) {
+      console.log('video added', peer);
+      var remotes = document.getElementById('remotes');
+      if (remotes) {
+          var container = document.createElement('div');
+          container.className = 'videoContainer';
+          container.id = 'container_' + this.webrtc.getDomId(peer);
+          container.appendChild(video);
 
-            // suppress contextmenu
-            video.oncontextmenu = function () { return false; };
+          // suppress contextmenu
+          video.oncontextmenu = function () { return false; };
 
-            remotes.appendChild(container);
-        }
-    });*/
+          remotes.appendChild(container);
+      }
+    });
   }
 
   public joinRoom(id) {
     console.log('join room id: ', id);
     this.webrtc.on('readyToCall', () => {
-      //this.webrtc.joinRoom(id);
+      this.webrtc.joinRoom(id);
     });
   }
 
@@ -129,6 +130,8 @@ export class VideoSectionComponent implements OnInit {
   }
 
   public hangup(): void {
-    this.webrtc.leaveRoom();
+    if(this.webrtc) {
+      this.webrtc.leaveRoom();
+    }
   }
 }

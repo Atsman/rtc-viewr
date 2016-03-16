@@ -59,7 +59,7 @@ function userLoadedReducer(state: UserState, action: UserLoadedAction): UserStat
 const initialState: UserState = {
   me: undefined,
   users: {}
-}
+};
 
 export function user(state: UserState = initialState, action: Action): UserState {
   switch(action.type) {
