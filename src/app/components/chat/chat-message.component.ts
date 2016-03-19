@@ -15,7 +15,10 @@ import {Externalizer} from '../../services/externalizer';
       <img src="{{getUserImage()}}" alt="" />
       <div class="message">
         <span class="message__user-name">{{message.username}}</span>
-        <time class="message__time">{{message.time}}</time>
+        <time class="message__time">
+          <i class="fa fa-clock-o"></i>
+          {{message.time}}
+        </time>
         <p class="message__text">{{message.message}}</p>
       </div>
     </li>

@@ -19,7 +19,11 @@ import {User} from '../../model/user';
     <div class="chat">
       <div class="chat-history">
         <ul>
-          <chat-message *ngFor="#message of getMessages()|async" [message]="message" [me]="me" [users]="users"></chat-message>
+          <chat-message
+            *ngFor="#message of getMessages()|async"
+            [message]="message" [me]="me"
+            [users]="users">
+          </chat-message>
         </ul>
       </div>
       <div class="chat-controls">

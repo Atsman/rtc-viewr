@@ -1,23 +1,34 @@
 .chat {
-  position: absolute;
+  width: 320px;
   margin: 0 auto;
-  background: #F2F5F8;
-  border-radius: 5px;
+  background: #fff;
 
   height: 100%;
   top: 0;
+  position: absolute;
   left: 0;
-  right: 0;
+}
+
+.chat-header {
+  background: #0e6f98;
+  padding: 0 20px;
+  height: 50px;
+  line-height: 50px;
+
+  h1 {
+    @include font-size(14px);
+    font-weight: 100;
+    color: #fff;
+    text-transform: uppercase;
+  }
 }
 
 .chat-history {
   overflow-y: auto;
+  padding: 20px;
 
   height: 100%;
-  padding-bottom: 120px;
   z-index: 1;
-  background: #F2F5F8;
-  padding: 10px 10px 130px 10px;
 }
 
 .chat-item {
@@ -26,7 +37,7 @@
   margin-bottom: 15px;
 
   img {
-    width: 50px;
+    width: 36px;
     border-radius: 50%;
   }
 }
@@ -34,19 +45,19 @@
 .chat-item--me {
   .message {
     margin-left: 15px;
-    background: #fff;
+    background: #f6f6f6;
 
     &::before {
       right: 100%;
       border: solid transparent;
-      border-right-color: #fff;
+      border-right-color: #f6f6f6;
       content: '';
       height: 0;
       width: 0;
       position: absolute;
       pointer-events: none;
       border-width: 10px;
-      top: 20px;
+      top: 10px;
     }
   }
 }
@@ -54,19 +65,19 @@
 .chat-item--other {
   .message {
     margin-right: 15px;
-    background: #E3E9EF;
+    background: #f6f6f6;
 
     &::after {
       left: 100%;
       border: solid transparent;
-      border-left-color: #E3E9EF;
+      border-left-color: #f6f6f6;
       content: '';
       height: 0;
       width: 0;
       position: absolute;
       pointer-events: none;
       border-width: 10px;
-      top: 20px;
+      top: 10px;
     }
   }
 }
@@ -78,18 +89,19 @@
 }
 
 .message__user-name {
-  @include font-size(14px);
+  font-size: 13px;
   font-weight: bold;
   color: #000;
 }
 
 .message__time {
-  @include font-size(12px);
+  font-size: 11px;
   color: #999;
 }
 
 .message__text {
-  @include font-size(13px);
+  font-size: 13px;
+  color: #777777;
 }
 
 .btns-row {
@@ -97,7 +109,9 @@
 }
 
 .chat-controls {
-  border-top: 1px solid #fff;
+  margin-top: 10px;
+  border-top: 1px solid #f6f6f6;
+  padding: 20px;
   padding-top: 10px;
 
   position: absolute;
@@ -105,8 +119,6 @@
   left: 0;
   width: 100%;
   z-index: 34;
-  padding: 10px;
-  background: #F2F5F8;
 }
 
 .chat-controls__textarea {
@@ -115,15 +127,44 @@
   border: none;
   padding: 10px;
   border-radius: 5px;
-  resize: none
+  resize: none;
+  outline: none;
 }
 
 .chat-controls__btn {
-  padding: 0 10px;
-  background: #75b1e8;
+  @include font-size(13px);
+  padding: 0 15px;
+  background: #0e6f98;
   line-height: 25px;
   display: inline-block;
   color: #fff;
   text-decoration: none;
   border-radius: 3px;
+}
+
+.attach-file {
+  color: #999;
+  float: right;
+}
+
+// scroll
+// Let's get this party started
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+// Track
+::-webkit-scrollbar-track {
+  border-radius: 0;
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, .3);
+}
+
+// Handle
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .2);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(0, 0, 0, .3);
 }

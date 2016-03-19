@@ -9,7 +9,7 @@
   transition: .4s;
   width: 100%;
   z-index: 999;
-  
+
   &.active {
     transform: translateY(0);
   }
@@ -34,7 +34,12 @@
   line-height: 50px;
 
   a {
+    display: inline-block;
     color: #fff;
     margin: 0 10px;
+
+    img {
+      vertical-align: middle;
+    }
   }
 }

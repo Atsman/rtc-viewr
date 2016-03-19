@@ -9,8 +9,12 @@ import {Store} from 'redux';
   selector: 'video-section',
   directives: [NgClass],
   template: `
-    <video id="mini-video" autoplay></video>
-    <div id="remotes"></div>
+    <div class="mini">
+      <a id="mini-video-link" class="make-main">
+        <video id="mini-video" class="mini-video" autoplay></video>
+      </a>
+    </div>
+    <video id="remote-video" autoplay></video>
     <div class="controls">
       <a class='controls-item controls-item--mute' (click)="muteAudio()">
         <i class="fa" [ngClass]="{
@@ -40,6 +44,7 @@ export class VideoSectionComponent {
   public isVideoPaused: boolean = false;
   public isFullscreen: boolean = false;
   private roomId: string;
+  private isFirst: boolean = true;
 
   constructor(private _state: AppStore) {
     this._state.getUserState().subscribe((userState) => {
@@ -61,35 +66,47 @@ export class VideoSectionComponent {
   }
 
   private initializeWebrtc() {
+    function mergeStreeam(video1: Element, video2: Element) {
+      video1.setAttribute('src', video2.getAttribute('src'));
+    }
+
     this.webrtc = new SimpleWebRtc({
       localVideoEl: 'mini-video',
       autoRequestMedia: true,
       nick: this._state.getMe().username
     });
 
-    this.webrtc.on('videoAdded', function (video, peer) {
+    const remoteVideo = document.getElementById('remote-video');
+
+    this.webrtc.on('videoAdded', (video, peer) => {
       console.log('video added', peer);
-      var remotes = document.getElementById('remotes');
-      if (remotes) {
-        var container = document.createElement('div');
-        container.className = 'videoContainer';
-        container.id = 'container_' + this.webrtc.getDomId(peer);
-        video.classList.add('remote-video');
-        container.appendChild(video);
+      if(this.isFirst) {
+        remoteVideo.setAttribute('src', video.getAttribute('src'));
+        mergeStreeam(remoteVideo, video);
+        this.isFirst = false;
+      }
 
-        // suppress contextmenu
+      const mini = document.querySelector('.mini');
+      if(mini) {
+        const a = document.createElement('a');
+        a.classList.add('make-main');
+        a.id = 'container_' + getDomId(peer);
+        video.classList.add('mini-video');
+        a.addEventListener('click', () => {
+          mergeStreeam(remoteVideo, video);
+        });
+        a.appendChild(video);
         video.oncontextmenu = function () { return false; };
-
-        remotes.appendChild(container);
+        mini.appendChild(a);
       }
     });
 
-    this.webrtc.on('videoRemoved', function (video, peer) {
+    this.webrtc.on('videoRemoved', (video, peer) => {
       console.log('video removed ', peer);
-      var remotes = document.getElementById('remotes');
-      var el = document.getElementById(peer ? 'container_' + this.webrtc.getDomId(peer) : 'localScreenContainer');
-      if (remotes && el) {
-        remotes.removeChild(el);
+      const mini = document.querySelector('.mini');
+      const a = document.getElementById(peer ? 'container_' + getDomId(peer) : 'localScreenContainer');
+      if (mini && a) {
+        mini.removeChild(a);
       }
     });
   }
@@ -98,6 +115,7 @@ export class VideoSectionComponent {
     console.log('join room id: ', id);
     this.webrtc.on('readyToCall', () => {
       this.webrtc.joinRoom(id);
+      this.webrtc.mute();
     });
   }
 
@@ -150,4 +168,8 @@ export class VideoSectionComponent {
       this.webrtc.leaveRoom();
     }
   }
+}
+
+function getDomId(peer) {
+  return [peer.id, peer.type, peer.broadcaster ? 'broadcasting' : 'incoming'].join('_');
 }

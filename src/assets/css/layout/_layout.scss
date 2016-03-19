@@ -6,18 +6,16 @@
 }
 
 .sidebar {
-  visibility: hidden;
   background: #fff;
   height: 100%;
   position: fixed;
   right: 0;
   top: 0;
   transform: translateX(100%);
-  transition: visibility 0s, transform .4s;
-  width: 300px;
+  transition: transform .4s;
+  width: 320px;
 
   &.active {
-    visibility: visible;
     transform: translateX(0);
   }
 }
