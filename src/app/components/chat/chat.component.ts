@@ -17,11 +17,14 @@ import {User} from '../../model/user';
   directives: [ChatMessageComponent],
   template: `
     <div class="chat">
+      <div class="chat-header">
+        <h1>Interviewr Chat</h1>
+      </div>
       <div class="chat-history">
         <ul>
           <chat-message
             *ngFor="#message of getMessages()|async"
-            [message]="message" [me]="me"
+            [message]="message" [me]="getMe()"
             [users]="users">
           </chat-message>
         </ul>
@@ -29,7 +32,7 @@ import {User} from '../../model/user';
       <div class="chat-controls">
         <textarea
           class="chat-controls__textarea"
-          rows="3"
+          rows="2"
           placeholder="Type your message"
           [(ngModel)]="message">
         </textarea>
@@ -58,6 +61,10 @@ export class ChatComponent implements OnInit {
     return this.store.getChatState().map((chat) => chat.messages);
   }
 
+  public getMe() {
+    return this.store.getMe();
+  }
+
   public sendMessage() {
     const me = this.store.getMe();
     const message = {
@@ -65,6 +72,7 @@ export class ChatComponent implements OnInit {
       time: new Date(),
       message: this.message,
       userImage: me.imageId,
+      username: me.username,
       roomId: this.store.getCurrentState().interview.roomId
     };
     this.store.dispatch(this.chatActions.sendMessage(message));

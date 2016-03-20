@@ -29,6 +29,7 @@
 
   height: 100%;
   z-index: 1;
+  padding-bottom: 185px;
 }
 
 .chat-item {
@@ -80,6 +81,10 @@
       top: 10px;
     }
   }
+
+  img {
+    order: 1;
+  }
 }
 
 .message {
@@ -109,6 +114,7 @@
 }
 
 .chat-controls {
+  background: #fff;
   margin-top: 10px;
   border-top: 1px solid #f6f6f6;
   padding: 20px;
