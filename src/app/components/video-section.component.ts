@@ -3,7 +3,7 @@ import {NgClass} from 'angular2/common';
 import SimpleWebRtc = require('simplewebrtc');
 import {AppStore} from '../redux/AppStore';
 import {Observable} from 'rxjs';
-import {Store} from 'redux';
+import {InterviewActions} from '../redux/Interview';
 
 @Component({
   selector: 'video-section',
@@ -43,23 +43,28 @@ export class VideoSectionComponent {
   public isMuted: boolean = false;
   public isVideoPaused: boolean = false;
   public isFullscreen: boolean = false;
-  private roomId: string;
   private isFirst: boolean = true;
 
-  constructor(private _state: AppStore) {
+  constructor(
+    private _state: AppStore,
+    private interviewActions: InterviewActions
+  ) {
     this._state.getUserState().subscribe((userState) => {
       if(!this.webrtc && userState.me) {
         this.initializeWebrtc();
       }
     });
 
+    let prevRoomId;
     this._state.getInterviewState().subscribe((interview) => {
       const newRoomId = interview.roomId;
-      if(this.webrtc && this.roomId !== newRoomId) {
-        this.roomId = newRoomId;
-        this.hangup();
-        if(this.roomId) {
-          this.joinRoom(this.roomId);
+      if(this.webrtc && prevRoomId !== newRoomId) {
+        if(prevRoomId) {
+          this.hangup();
+        }
+        prevRoomId = newRoomId;
+        if(prevRoomId) {
+          this.joinRoom(prevRoomId);
         }
       }
     });
@@ -167,6 +172,7 @@ export class VideoSectionComponent {
     if(this.webrtc) {
       this.webrtc.leaveRoom();
     }
+    this.interviewActions.hangup();
   }
 }
 

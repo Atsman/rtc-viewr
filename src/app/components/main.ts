@@ -32,7 +32,17 @@ export class MainComponent implements AfterViewInit {
     private interviewActions: InterviewActions,
     private userActions: UserActions,
     private state: AppStore) {
+
     userActions.getMe();
+
+    let prevRoomId;
+    state.getInterviewState().subscribe(({roomId}) => {
+      if(prevRoomId !== roomId) {
+        interviewActions.getOne(roomId);
+        prevRoomId = roomId;
+      }
+    });
+
     this.state.getSidebarState().subscribe((sidebar: SidebarState) => {
       this._isSidebarActive = !!sidebar.active;
     });

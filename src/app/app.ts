@@ -13,6 +13,7 @@ import {JwtService} from './services/jwt.service';
 import {UserResource} from './services/user.resource';
 import {reduxProviders} from './redux/redux.providers';
 import {Externalizer} from './services/externalizer';
+import {InterviewResource} from './services/interview.resource';
 /*
  * App Component
  * Top Level Component
@@ -21,7 +22,7 @@ import {Externalizer} from './services/externalizer';
   selector: 'app',
   providers: [
     ...FORM_PROVIDERS, ...reduxProviders, Logger, AppSocket,
-    ChatService, JwtService, UserResource, Externalizer,
+    ChatService, JwtService, UserResource, InterviewResource, Externalizer,
     provide(APP_CONFIG, {useValue: CONFIG})
   ],
   directives: [MainComponent],

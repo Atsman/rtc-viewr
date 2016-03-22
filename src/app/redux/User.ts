@@ -90,11 +90,11 @@ export class UserActions {
       });
     }, () => {
       window.location.assign('/');
-    }) ;
+    });
   }
 
   getUser(id) {
-    this.userResource.getUser(id).subscribe((user) => {
+    this.userResource.getOne(id).subscribe((user) => {
       this.appState.dispatch({
         type: USER_LOADED,
         payload: {
