@@ -27,4 +27,22 @@ export class InterviewResource {
       .get(`${this.resourceUrl}/${id}`, options)
       .map((res: Response) => res.json());
   }
+
+  public update(id: string, data: any) {
+    const options: RequestOptions = getAuthOptions(this.jwtService);
+    options.headers.append('Content-Type', 'application/json');
+    return this.http.put(`${this.resourceUrl}/${id}`, JSON.stringify(data), options);
+  }
+
+  public start(id: string) {
+    return this.update(id, {status: 'InProgress'}).subscribe(() => {
+      console.log("started");
+    });
+  }
+
+  public hangup(id: string) {
+    return this.update(id, {status: 'Completed'}).subscribe(() => {
+      console.log("hangup");
+    });
+  }
 }

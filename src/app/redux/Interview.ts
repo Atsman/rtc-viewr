@@ -19,7 +19,7 @@ interface ChangeRoomAction extends Action {
 interface InterviewLoadedAction extends Action {
   payload: {
     interview: Interview;
-  }
+  };
 }
 
 export interface InterviewState {
@@ -85,12 +85,20 @@ export class InterviewActions {
     });
   }
 
+  start() {
+    const state = this.appState.getState();
+    const interviewId = state.interview.roomId;
+
+    this.interviewResource.start(interviewId);
+  }
+
   hangup() {
     const state = this.appState.getState();
     const interviewId = state.interview.roomId;
     const interviewOwner = state.interview.interview.owner._id;
     const interviewCandidate = state.interview.interview.candidate._id;
     const me = state.user.me;
+    this.interviewResource.hangup(interviewId);
 
     if(me === interviewOwner) {
       window.location.assign(`/interview/${interviewId}/feedbackform`);

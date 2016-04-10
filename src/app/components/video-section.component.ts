@@ -119,6 +119,7 @@ export class VideoSectionComponent {
   public joinRoom(id) {
     console.log('join room id: ', id);
     this.webrtc.on('readyToCall', () => {
+      this.interviewActions.start();
       this.webrtc.joinRoom(id);
       this.webrtc.mute();
     });
