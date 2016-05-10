@@ -35,14 +35,17 @@ export class InterviewResource {
   }
 
   public start(id: string) {
-    return this.update(id, {status: 'InProgress'}).subscribe(() => {
-      console.log("started");
+    const options: RequestOptions = getAuthOptions(this.jwtService);
+    return this.http.post(`${this.resourceUrl}/${id}/start`, '', options)
+    .subscribe(() => {
+      console.log('interview started')
     });
   }
 
   public hangup(id: string) {
-    return this.update(id, {status: 'Completed'}).subscribe(() => {
-      console.log("hangup");
+    const options: RequestOptions = getAuthOptions(this.jwtService);
+    return this.http.post(`${this.resourceUrl}/${id}/end`, '', options).subscribe(() => {
+      console.log('interview ended')
     });
   }
 }
